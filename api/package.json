@@ -5,12 +5,12 @@
   "type": "module",
   "description": "Express API for the Monthly Expense Tracker (MoneyKanakku) — session-based auth, Prisma data layer shared with ../db",
   "main": "dist/server.js",
-  "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.js",
-    "build": "tsc",
-    "typecheck": "tsc --noEmit"
-  },
+ "scripts": {
+  "dev": "tsx watch src/server.ts",
+  "start": "node dist/api/src/server.js", 
+  "build": "tsc && xcopy /E /I /Y ..\\db dist\\db", 
+  "typecheck": "tsc --noEmit"
+}, 
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",

@@ -8,7 +8,7 @@
  * db/prisma/client.ts) starting from that file's location on disk, so
  * db/node_modules is found correctly even though api/ has its own
  * separate node_modules for its own dependencies (Express, zod, ...).
- */
+ */ 
 export { prisma } from "../../../db/prisma/client.js";
-export * from "../../../db/generated/prisma/enums.js";
-export type * from "../../../db/generated/prisma/models.js";
+export * from "../../../db/generated/prisma/index.js";
+export type * from "../../../db/generated/prisma/index.js";
