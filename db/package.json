@@ -1,0 +1,36 @@
+{
+  "name": "expensio-db",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PostgreSQL schema + Prisma ORM for the Monthly Expense Tracker (MoneyKanakku)",
+  "scripts": {
+    "db:start": "powershell -ExecutionPolicy Bypass -File scripts/start-db.ps1",
+    "db:stop": "powershell -ExecutionPolicy Bypass -File scripts/stop-db.ps1",
+    "db:status": "powershell -ExecutionPolicy Bypass -File scripts/status-db.ps1",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.23.0",
+    "prisma": "^7.10.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.20.2",
+    "@types/pg": "^8.23.1",
+    "bcryptjs": "^3.0.3",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}

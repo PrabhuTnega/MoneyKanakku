@@ -1,0 +1,222 @@
+/* =========================================================
+   Monthly Expense Tracker — Design System / Theme Tokens
+   Premium fintech look. Mobile-first, scales to desktop.
+   ========================================================= */
+
+:root{
+  /* Brand */
+  --brand-50:#f1efff;
+  --brand-100:#e4e0ff;
+  --brand-200:#c9c0ff;
+  --brand-300:#a99bff;
+  --brand-400:#8b76ff;
+  --brand-500:#6c5ce7;   /* primary */
+  --brand-600:#5843d8;
+  --brand-700:#4634b0;
+  --brand-800:#362a87;
+  --brand-900:#241c5c;
+
+  --accent-teal:#0ecfae;
+  --accent-teal-dark:#0aa88a;
+  --accent-amber:#ffb020;
+  --accent-amber-dark:#e0951a;
+  --accent-coral:#ff5a5f;
+  --accent-coral-dark:#e0454a;
+  --accent-blue:#3b82f6;
+
+  --income-color:#0ecfae;
+  --expense-color:#ff5a5f;
+
+  /* Neutrals - light mode */
+  --bg:#f5f6fb;
+  --bg-elevated:#ffffff;
+  --surface:#ffffff;
+  --surface-soft:#f0f1f8;
+  --border-color:#eaebf3;
+  --text-primary:#181828;
+  --text-secondary:#6b6f8a;
+  --text-muted:#9a9db8;
+  --text-inverse:#ffffff;
+
+  --shadow-sm:0 2px 8px rgba(24,24,40,.05);
+  --shadow-md:0 8px 24px rgba(24,24,40,.08);
+  --shadow-lg:0 16px 40px rgba(24,24,40,.12);
+  --shadow-card:0 10px 30px -8px rgba(108,92,231,.18);
+  --shadow-nav:0 -4px 24px rgba(24,24,40,.08);
+
+  --radius-xs:8px;
+  --radius-sm:12px;
+  --radius-md:16px;
+  --radius-lg:22px;
+  --radius-xl:28px;
+  --radius-pill:999px;
+
+  --font-body:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display:'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --sidebar-w: 264px;
+  --sidebar-w-collapsed: 84px;
+  --bottom-nav-h: 72px;
+  --topbar-h: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --ease-standard: cubic-bezier(.4,0,.2,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+  color-scheme: light;
+}
+
+[data-theme="dark"]{
+  --bg:#0e0f1a;
+  --bg-elevated:#161829;
+  --surface:#1a1c30;
+  --surface-soft:#20223a;
+  --border-color:#2a2c46;
+  --text-primary:#f2f3fb;
+  --text-secondary:#a3a6c2;
+  --text-muted:#75789a;
+  --text-inverse:#181828;
+
+  --shadow-sm:0 2px 8px rgba(0,0,0,.25);
+  --shadow-md:0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg:0 16px 40px rgba(0,0,0,.45);
+  --shadow-card:0 10px 30px -8px rgba(108,92,231,.35);
+  --shadow-nav:0 -4px 24px rgba(0,0,0,.4);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0f1a;
+    --bg-elevated:#161829;
+    --surface:#1a1c30;
+    --surface-soft:#20223a;
+    --border-color:#2a2c46;
+    --text-primary:#f2f3fb;
+    --text-secondary:#a3a6c2;
+    --text-muted:#75789a;
+    --text-inverse:#181828;
+    --shadow-sm:0 2px 8px rgba(0,0,0,.25);
+    --shadow-md:0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg:0 16px 40px rgba(0,0,0,.45);
+    --shadow-card:0 10px 30px -8px rgba(108,92,231,.35);
+    --shadow-nav:0 -4px 24px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; overflow-x:hidden; }
+/* Permanent safety net: no single element (a naked canvas that hasn't
+   been sized by Chart.js yet, an image, an unusually long unbreakable
+   string, etc.) should ever be able to widen the whole page and drag
+   the sticky/fixed header+footer along with it on a narrow viewport —
+   see components.css's .chart-box canvas fix for the specific bug that
+   prompted this, and keep this rule even if that one's cause changes. */
+img,canvas,svg,video{ max-width:100%; height:auto; }
+body{
+  background:var(--bg);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+  transition:background-color .25s var(--ease-standard), color .25s var(--ease-standard);
+}
+h1,h2,h3,h4,h5,h6{ font-family:var(--font-display); color:var(--text-primary); font-weight:600; }
+a{ text-decoration:none; color:inherit; }
+button{ font-family:inherit; }
+::selection{ background:var(--brand-200); color:var(--brand-900); }
+
+/* Scrollbars (desktop) */
+::-webkit-scrollbar{ width:8px; height:8px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--border-color); border-radius:99px; }
+::-webkit-scrollbar-thumb:hover{ background:var(--text-muted); }
+
+/* Utility */
+.text-secondary{ color:var(--text-secondary) !important; }
+.text-muted-c{ color:var(--text-muted) !important; }
+.font-display{ font-family:var(--font-display); }
+.fw-700{ font-weight:700; }
+.fw-800{ font-weight:800; }
+.bg-surface{ background:var(--surface); }
+.bg-app{ background:var(--bg); }
+.rounded-xl{ border-radius:var(--radius-lg) !important; }
+.rounded-2xl{ border-radius:var(--radius-xl) !important; }
+.shadow-card{ box-shadow:var(--shadow-md); }
+.tap-highlight-none{ -webkit-tap-highlight-color:transparent; }
+.divider{ height:1px; background:var(--border-color); border:0; margin:0; }
+
+/* Focus visibility (accessibility) */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:2px solid var(--brand-400);
+  outline-offset:2px;
+  border-radius:6px;
+}
+
+/* Page transition */
+.page-enter{ animation: pageFadeIn .45s var(--ease-standard) both; }
+@keyframes pageFadeIn{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.stagger > *{ animation: pageFadeIn .5s var(--ease-standard) both; }
+.stagger > *:nth-child(1){ animation-delay:.02s; }
+.stagger > *:nth-child(2){ animation-delay:.07s; }
+.stagger > *:nth-child(3){ animation-delay:.12s; }
+.stagger > *:nth-child(4){ animation-delay:.17s; }
+.stagger > *:nth-child(5){ animation-delay:.22s; }
+.stagger > *:nth-child(6){ animation-delay:.27s; }
+.stagger > *:nth-child(7){ animation-delay:.32s; }
+.stagger > *:nth-child(8){ animation-delay:.37s; }
+
+/* =========================================================
+   Chart / Data-viz palette (validated — see dataviz skill)
+   Fixed categorical order — never cycle/reassign per filter.
+   ========================================================= */
+:root{
+  --chart-1-blue:#2a78d6;
+  --chart-2-orange:#eb6834;
+  --chart-3-aqua:#1baf7a;
+  --chart-4-yellow:#eda100;
+  --chart-5-magenta:#e87ba4;
+  --chart-6-green:#008300;
+  --chart-7-violet:#4a3aa7;
+  --chart-8-red:#e34948;
+  --chart-other:#9a9db8;
+
+  --chart-good:#0ca30c;
+  --chart-warning:#fab219;
+  --chart-serious:#ec835a;
+  --chart-critical:#d03b3b;
+
+  --chart-grid:var(--border-color);
+  --chart-axis:var(--text-muted);
+  --chart-ink:var(--text-primary);
+  --chart-ink-secondary:var(--text-secondary);
+}
+[data-theme="dark"]{
+  --chart-1-blue:#3987e5;
+  --chart-2-orange:#d95926;
+  --chart-3-aqua:#199e70;
+  --chart-4-yellow:#c98500;
+  --chart-5-magenta:#d55181;
+  --chart-6-green:#008300;
+  --chart-7-violet:#9085e9;
+  --chart-8-red:#e66767;
+  --chart-other:#6a6d8f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --chart-1-blue:#3987e5;
+    --chart-2-orange:#d95926;
+    --chart-3-aqua:#199e70;
+    --chart-4-yellow:#c98500;
+    --chart-5-magenta:#d55181;
+    --chart-6-green:#008300;
+    --chart-7-violet:#9085e9;
+    --chart-8-red:#e66767;
+    --chart-other:#6a6d8f;
+  }
+}

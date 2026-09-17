@@ -1,0 +1,35 @@
+{
+  "name": "expensio-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Express API for the Monthly Expense Tracker (MoneyKanakku) — session-based auth, Prisma data layer shared with ../db",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "nodemailer": "^10.0.9",
+    "zod": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.2",
+    "@types/nodemailer": "^8.0.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}

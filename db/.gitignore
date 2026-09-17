@@ -1,0 +1,8 @@
+node_modules/
+pgdata/
+logs/
+.env
+*.tmp
+generated/
+
+/generated/prisma

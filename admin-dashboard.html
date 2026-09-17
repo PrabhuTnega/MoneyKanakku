@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Admin Dashboard — MoneyKanakku</title>
+<meta name="theme-color" content="#181828">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark" style="background:linear-gradient(135deg,#181828,#4634b0);"><i class="bi bi-shield-lock-fill"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Admin Console</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Administration</div>
+      <a href="admin-dashboard.html" class="side-link" data-nav-page="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span class="nav-label">Overview</span></a>
+      <a href="admin-users.html" class="side-link" data-nav-page="admin-users.html"><i class="bi bi-people-fill"></i><span class="nav-label">Users</span></a>
+      <a href="admin-categories.html" class="side-link" data-nav-page="admin-categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="admin-categories.html#system" class="side-link" data-nav-page=""><i class="bi bi-sliders"></i><span class="nav-label">System Config</span></a>
+      <a href="admin-live-ops.html" class="side-link" data-nav-page="admin-live-ops.html"><i class="bi bi-activity"></i><span class="nav-label">Live Ops</span></a>
+      <a href="admin-audit-logs.html" class="side-link" data-nav-page="admin-audit-logs.html"><i class="bi bi-clock-history"></i><span class="nav-label">Audit Logs</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="dashboard.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Back to App</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">A</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Admin User</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">admin@expensio.app</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <a href="dashboard.html" class="icon-btn ripple-surface"><i class="bi bi-arrow-left"></i></a>
+      <div class="topbar-title">Admin Console</div>
+      <button class="icon-btn ripple-surface" data-theme-toggle><i class="bi bi-moon-stars" data-theme-icon></i></button>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Admin Overview</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="icon-btn ripple-surface" data-theme-toggle><i class="bi bi-moon-stars" data-theme-icon></i></button>
+        <span class="badge-soft b-violet">Super Admin</span>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="row row-cols-2 row-cols-md-3 g-3 mb-3 stagger">
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-people-fill"></i></div><div class="stat-value" id="statTotalUsers">—</div><div class="stat-label">Total users</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-person-check-fill"></i></div><div class="stat-value" id="statActiveUsers">—</div><div class="stat-label">Active users</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-amber"><i class="bi bi-grid-3x3-gap-fill"></i></div><div class="stat-value" id="statGlobalCategories">—</div><div class="stat-label">Global categories</div></div></div>
+      </div>
+      <div class="row row-cols-2 row-cols-md-3 g-3 mb-4 stagger">
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-arrow-up-circle-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="statIncomeTracked">—</div><div class="stat-label">Income tracked</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-arrow-down-circle-fill"></i></div><div class="stat-value" style="color:var(--expense-color);" id="statExpenseTracked">—</div><div class="stat-label">Expense tracked</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-piggy-bank-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="statNetTracked">—</div><div class="stat-label">Net saved (platform)</div></div></div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-8">
+          <div class="surface-card mb-4">
+            <div class="section-title-row"><h6>New user signups — last 6 months</h6></div>
+            <div class="chart-box" style="height:260px;"><canvas id="signupsChart"></canvas></div>
+          </div>
+
+          <div class="surface-card">
+            <div class="section-title-row"><h6>Recent user activity</h6><a href="admin-users.html">View all users</a></div>
+            <div class="table-responsive">
+              <table class="table table-modern mb-0">
+                <thead><tr><th>User</th><th>Email</th><th>Joined</th><th>Status</th></tr></thead>
+                <tbody id="recentUsersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <div class="surface-card mb-4">
+            <h6 class="mb-3">System health</h6>
+            <div class="d-flex justify-content-between py-2" style="font-size:.85rem;"><span class="text-secondary">API p95 latency</span><span class="fw-700" id="healthLatency">—</span></div>
+            <div class="d-flex justify-content-between py-2" style="font-size:.85rem;"><span class="text-secondary">DB cache hit ratio</span><span class="fw-700" id="healthCacheHit">—</span></div>
+            <div class="d-flex justify-content-between py-2" style="font-size:.85rem;"><span class="text-secondary">DB storage used</span><span class="fw-700" id="healthDbSize">—</span></div>
+            <a href="admin-live-ops.html" class="d-block text-center fw-700 mt-2" style="font-size:.82rem;color:var(--brand-500);">Full Live Ops →</a>
+          </div>
+          <div class="surface-card">
+            <h6 class="mb-3">Quick actions</h6>
+            <a href="admin-users.html" class="d-flex align-items-center gap-3 py-2 text-decoration-none"><div class="icon-chip chip-violet"><i class="bi bi-person-plus-fill"></i></div><span class="fw-700" style="font-size:.85rem;color:var(--text-primary);">Invite new user</span></a>
+            <a href="admin-categories.html" class="d-flex align-items-center gap-3 py-2 text-decoration-none"><div class="icon-chip chip-teal"><i class="bi bi-plus-lg"></i></div><span class="fw-700" style="font-size:.85rem;color:var(--text-primary);">Add global category</span></a>
+            <a href="admin-categories.html#system" class="d-flex align-items-center gap-3 py-2 text-decoration-none"><div class="icon-chip chip-amber"><i class="bi bi-sliders"></i></div><span class="fw-700" style="font-size:.85rem;color:var(--text-primary);">System configuration</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/chartjs/chart.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/admin-dashboard-data.js"></script>
+<script>
+  MET.guardAuth('admin');
+</script>
+</body>
+</html>

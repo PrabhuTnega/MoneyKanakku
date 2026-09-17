@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Dashboard — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR (Desktop) ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span><span class="badge-count badge rounded-pill" style="background:var(--accent-coral);font-size:.65rem;">3</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="app-main">
+
+    <!-- Mobile Top Bar -->
+    <header class="mobile-topbar d-lg-none">
+      <a href="profile.html"><div class="avatar avatar-sm" style="background:var(--brand-100);">PS</div></a>
+      <div class="topbar-title">Good morning 👋<small>Priya Sharma</small></div>
+      <a href="notifications.html" class="icon-btn ripple-surface position-relative">
+        <i class="bi bi-bell"></i><span class="dot-indicator"></span>
+      </a>
+      <button class="icon-btn ripple-surface" data-theme-toggle><i class="bi bi-moon-stars" data-theme-icon></i></button>
+    </header>
+
+    <!-- Desktop Top Bar -->
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Dashboard</h1>
+      <div class="search-box">
+        <i class="bi bi-search text-muted-c"></i>
+        <input type="text" placeholder="Search transactions, categories...">
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="icon-btn ripple-surface" data-theme-toggle><i class="bi bi-moon-stars" data-theme-icon></i></button>
+        <a href="notifications.html" class="icon-btn ripple-surface position-relative"><i class="bi bi-bell"></i><span class="dot-indicator"></span></a>
+        <a href="expense-form.html" class="btn btn-primary ripple-surface"><i class="bi bi-plus-lg me-1"></i>Add Transaction</a>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-8">
+
+          <!-- Balance Hero -->
+          <div class="balance-hero mb-4 stagger">
+            <div class="hero-row d-flex justify-content-between align-items-start">
+              <div>
+                <div class="hero-label" id="heroLabel">TOTAL SPENT</div>
+                <div class="hero-amount mt-1"><span id="heroAmount" data-counter="0" data-currency>₹0</span></div>
+                <div class="mt-1" style="font-size:.75rem;" id="heroVsPrev"></div>
+              </div>
+              <div class="badge-soft" id="heroMonthBadge" style="background:rgba(255,255,255,.18);color:#fff;"><i class="bi bi-calendar3 me-1"></i>—</div>
+            </div>
+            <div class="hero-row mt-4">
+              <div class="d-flex justify-content-between align-items-center mb-2" style="font-size:.8rem;opacity:.9;">
+                <span>Budget used</span><span class="fw-700" id="heroBudgetLine">— / —</span>
+              </div>
+              <div class="progress" style="background:rgba(255,255,255,.25);">
+                <div class="progress-bar" id="heroBudgetBar" style="width:0%;background:#fff;"></div>
+              </div>
+            </div>
+            <div class="hero-row d-flex gap-4 mt-4">
+              <div>
+                <div style="font-size:.72rem;opacity:.8;">Remaining</div>
+                <div class="fw-700" id="heroRemaining">—</div>
+              </div>
+              <div>
+                <div style="font-size:.72rem;opacity:.8;">Daily avg</div>
+                <div class="fw-700" id="heroDailyAvg">—</div>
+              </div>
+              <div>
+                <div style="font-size:.72rem;opacity:.8;">Days left</div>
+                <div class="fw-700" id="heroDaysLeft">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="row row-cols-4 g-2 mb-4 stagger">
+            <div class="col"><a href="expense-form.html" class="d-flex flex-column align-items-center gap-2 text-decoration-none ripple-surface p-2 rounded-xl">
+              <div class="icon-chip-lg chip-violet"><i class="bi bi-plus-lg"></i></div><span class="text-secondary fw-600" style="font-size:.7rem;">Add</span></a></div>
+            <div class="col"><a href="categories.html" class="d-flex flex-column align-items-center gap-2 text-decoration-none ripple-surface p-2 rounded-xl">
+              <div class="icon-chip-lg chip-teal"><i class="bi bi-grid-3x3-gap-fill"></i></div><span class="text-secondary fw-600" style="font-size:.7rem;">Categories</span></a></div>
+            <div class="col"><a href="budget.html" class="d-flex flex-column align-items-center gap-2 text-decoration-none ripple-surface p-2 rounded-xl">
+              <div class="icon-chip-lg chip-amber"><i class="bi bi-pie-chart-fill"></i></div><span class="text-secondary fw-600" style="font-size:.7rem;">Budget</span></a></div>
+            <div class="col"><a href="reports.html" class="d-flex flex-column align-items-center gap-2 text-decoration-none ripple-surface p-2 rounded-xl">
+              <div class="icon-chip-lg chip-blue"><i class="bi bi-bar-chart-line-fill"></i></div><span class="text-secondary fw-600" style="font-size:.7rem;">Reports</span></a></div>
+          </div>
+
+          <!-- Safe to Spend Today -->
+          <div class="surface-card mb-4 stagger" id="safeToSpendCard">
+            <div class="section-title-row">
+              <h6><i class="bi bi-shield-check me-1" style="color:var(--income-color);"></i>Safe to Spend Today</h6>
+            </div>
+            <div id="safeToSpendBody"><div class="section-loading" style="min-height:70px;"></div></div>
+          </div>
+
+          <!-- Smart Insights -->
+          <div class="surface-card mb-4 stagger" id="smartInsightsCard">
+            <div class="section-title-row">
+              <h6><i class="bi bi-stars me-1" style="color:var(--brand-500);"></i>Smart Insights</h6>
+            </div>
+            <div id="smartInsightsBody"><div class="section-loading" style="min-height:70px;"></div></div>
+          </div>
+
+          <!-- Income vs Expense -->
+          <div class="surface-card mb-4 stagger">
+            <div class="section-title-row">
+              <h6>Income vs Expense</h6>
+              <a href="expenses.html">View all</a>
+            </div>
+            <div class="row row-cols-2 g-3 mb-3">
+              <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <div class="icon-chip chip-teal" style="width:30px;height:30px;font-size:.85rem;"><i class="bi bi-arrow-up-circle-fill"></i></div>
+                  <span class="text-secondary fw-600" style="font-size:.78rem;">Income</span>
+                </div>
+                <div class="font-display fw-800" style="font-size:1.4rem;color:var(--income-color);" id="ieIncome">₹0</div>
+                <div style="font-size:.72rem;" id="ieIncomeVsPrev"></div>
+              </div>
+              <div class="col">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <div class="icon-chip chip-coral" style="width:30px;height:30px;font-size:.85rem;"><i class="bi bi-arrow-down-circle-fill"></i></div>
+                  <span class="text-secondary fw-600" style="font-size:.78rem;">Expense</span>
+                </div>
+                <div class="font-display fw-800" style="font-size:1.4rem;color:var(--expense-color);" id="ieExpense">₹0</div>
+                <div style="font-size:.72rem;" id="ieExpenseVsPrev"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between text-secondary mb-2" style="font-size:.75rem;">
+              <span>Total activity (income + expense): <strong style="color:var(--text-primary);" id="ieTotalAmount">₹0</strong></span>
+              <span id="ieTotalVsPrev"></span>
+            </div>
+            <div class="d-flex gap-1 mb-2" style="height:8px;border-radius:99px;overflow:hidden;">
+              <div id="ieIncomeBar" style="width:50%;background:var(--income-color);"></div>
+              <div id="ieExpenseBar" style="width:50%;background:var(--expense-color);"></div>
+            </div>
+            <div class="d-flex align-items-center gap-2" style="font-size:.8rem;" id="ieSavedLine">
+              <i class="bi bi-piggy-bank-fill" style="color:var(--income-color);"></i>
+              <span>No income/expense recorded yet this month.</span>
+            </div>
+          </div>
+
+          <!-- Stat tiles -->
+          <div class="row row-cols-2 row-cols-md-3 g-3 mb-4 stagger">
+            <div class="col">
+              <div class="stat-tile">
+                <div class="stat-icon chip-teal"><i class="bi bi-graph-up"></i></div>
+                <div class="stat-value" id="statDailyAvg">—</div>
+                <div class="stat-label">Daily average</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="stat-tile">
+                <div class="stat-icon chip-coral"><i class="bi bi-lightning-charge-fill"></i></div>
+                <div class="stat-value" id="statTopCategory">—</div>
+                <div class="stat-label">Top category</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="stat-tile">
+                <div class="stat-icon chip-blue"><i class="bi bi-receipt"></i></div>
+                <div class="stat-value" id="statTxnCount">—</div>
+                <div class="stat-label">Transactions</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend chart -->
+          <div class="surface-card mb-4">
+            <div class="section-title-row">
+              <h6>Spending trend — last 6 months</h6>
+              <a href="reports.html">Full report</a>
+            </div>
+            <div class="chart-box" style="height:220px;">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Recent transactions -->
+          <div class="surface-card">
+            <div class="section-title-row">
+              <h6>Recent transactions</h6>
+              <a href="expenses.html">See all</a>
+            </div>
+            <div id="recentTxns"></div>
+          </div>
+
+        </div>
+
+        <!-- Right column (desktop) -->
+        <div class="col-12 col-lg-4 d-none d-lg-block">
+          <div class="surface-card mb-4">
+            <div class="section-title-row"><h6>Category breakdown</h6><a href="categories.html">View all</a></div>
+            <div class="chart-box" style="height:200px;">
+              <canvas id="categoryDonut"></canvas>
+            </div>
+            <div id="categoryLegend" class="d-flex flex-column gap-2 mt-3"></div>
+          </div>
+
+          <div class="surface-card mb-4">
+            <div class="section-title-row"><h6>Budget status</h6><a href="budget.html">Manage</a></div>
+            <div id="budgetMini"></div>
+          </div>
+
+          <div class="surface-card">
+            <div class="section-title-row"><h6>Recurring due soon</h6><a href="recurring.html">View all</a></div>
+            <div id="recurringDueSoon"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mobile-only: category + budget sections stacked -->
+      <div class="d-lg-none mt-1">
+        <div class="surface-card mb-4">
+          <div class="section-title-row"><h6>Category breakdown</h6><a href="categories.html">View all</a></div>
+          <div class="chart-box" style="height:200px;">
+            <canvas id="categoryDonutMobile"></canvas>
+          </div>
+          <div id="categoryLegendMobile" class="d-flex flex-column gap-2 mt-3"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============ BOTTOM NAV (Mobile) ============ -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item active" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap">
+      <a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a>
+    </div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+
+  <!-- Desktop floating add button -->
+  <a href="expense-form.html" class="btn btn-primary rounded-circle fab-desktop d-none d-lg-flex align-items-center justify-content-center ripple-surface" style="width:60px;height:60px;box-shadow:0 14px 30px -8px rgba(108,92,231,.55);">
+    <i class="bi bi-plus-lg fs-4"></i>
+  </a>
+
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/chartjs/chart.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/dashboard-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

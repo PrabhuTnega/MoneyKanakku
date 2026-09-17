@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Live Ops — MoneyKanakku Admin</title>
+<meta name="theme-color" content="#181828">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark" style="background:linear-gradient(135deg,#181828,#4634b0);"><i class="bi bi-shield-lock-fill"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Admin Console</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Administration</div>
+      <a href="admin-dashboard.html" class="side-link" data-nav-page="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span class="nav-label">Overview</span></a>
+      <a href="admin-users.html" class="side-link" data-nav-page="admin-users.html"><i class="bi bi-people-fill"></i><span class="nav-label">Users</span></a>
+      <a href="admin-categories.html" class="side-link" data-nav-page="admin-categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="admin-categories.html#system" class="side-link" data-nav-page=""><i class="bi bi-sliders"></i><span class="nav-label">System Config</span></a>
+      <a href="admin-live-ops.html" class="side-link active" data-nav-page="admin-live-ops.html"><i class="bi bi-activity"></i><span class="nav-label">Live Ops</span></a>
+      <a href="admin-audit-logs.html" class="side-link" data-nav-page="admin-audit-logs.html"><i class="bi bi-clock-history"></i><span class="nav-label">Audit Logs</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="dashboard.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Back to App</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">A</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Admin User</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">admin@expensio.app</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <a href="admin-dashboard.html" class="icon-btn ripple-surface"><i class="bi bi-arrow-left"></i></a>
+      <div class="topbar-title">Live Ops</div>
+      <span class="live-badge"><span class="pulse-dot"></span>Live</span>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Live Ops</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <span class="text-secondary" style="font-size:.8rem;" id="lastUpdated">Updated just now</span>
+        <span class="live-badge"><span class="pulse-dot"></span>Live</span>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <p class="text-secondary mb-4" style="font-size:.85rem;">One pane for API golden signals, database health, and concurrent sessions — live from this API process.</p>
+
+      <!-- Golden signals -->
+      <div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+        <div class="col">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="text-secondary fw-600" style="font-size:.76rem;">Online Users</span>
+              <div class="icon-chip chip-teal" style="width:28px;height:28px;font-size:.8rem;"><i class="bi bi-people-fill"></i></div>
+            </div>
+            <div class="metric-value" id="mOnlineUsers" style="font-size:1.7rem;">214</div>
+            <div class="sparkline-box"><canvas id="sparkOnlineUsers"></canvas></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="text-secondary fw-600" style="font-size:.76rem;">Active Sessions</span>
+              <div class="icon-chip chip-violet" style="width:28px;height:28px;font-size:.8rem;"><i class="bi bi-key-fill"></i></div>
+            </div>
+            <div class="metric-value" id="mActiveSessions" style="font-size:1.7rem;">356</div>
+            <div class="sparkline-box"><canvas id="sparkActiveSessions"></canvas></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="text-secondary fw-600" style="font-size:.76rem;">API req / min</span>
+              <div class="icon-chip chip-blue" style="width:28px;height:28px;font-size:.8rem;"><i class="bi bi-arrow-left-right"></i></div>
+            </div>
+            <div class="metric-value" id="mReqPerMin" style="font-size:1.7rem;">1,284</div>
+            <div class="sparkline-box"><canvas id="sparkReqPerMin"></canvas></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="text-secondary fw-600" style="font-size:.76rem;">In-flight Requests</span>
+              <div class="icon-chip chip-amber" style="width:28px;height:28px;font-size:.8rem;"><i class="bi bi-hourglass-split"></i></div>
+            </div>
+            <div class="metric-value" id="mInFlight" style="font-size:1.7rem;">18</div>
+            <div class="sparkline-box"><canvas id="sparkInFlight"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+
+        <!-- Database health -->
+        <div class="col-12 col-lg-4">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h6 class="mb-0"><i class="bi bi-hdd-network-fill me-2"></i>Database</h6>
+              <span class="health-status" id="dbHealthBadge" style="color:var(--accent-teal-dark);"><span class="pulse-dot" id="dbHealthDot"></span>Healthy</span>
+            </div>
+            <div class="ops-row"><span class="text-secondary">Connections</span><span class="fw-700" id="dbConnections">— / —</span></div>
+            <div class="progress mb-2" style="height:6px;"><div class="progress-bar bar-safe" id="dbConnBar" style="width:0%;"></div></div>
+            <div class="ops-row"><span class="text-secondary">Cache hit ratio</span><span class="fw-700" id="dbCacheHit">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Database size</span><span class="fw-700" id="dbSize">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Slow queries (&gt;500ms)</span><span class="fw-700" id="dbSlowQueries">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Port</span><span class="fw-700" style="font-family:ui-monospace,monospace;">5544</span></div>
+          </div>
+        </div>
+
+        <!-- API latency -->
+        <div class="col-12 col-lg-4">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h6 class="mb-0"><i class="bi bi-speedometer me-2"></i>API Latency</h6>
+              <span class="health-status" id="latencyHealthBadge" style="color:var(--accent-teal-dark);"><span class="pulse-dot"></span>Nominal</span>
+            </div>
+            <div class="row row-cols-3 g-2 mb-3 text-center">
+              <div class="col"><div class="metric-value" style="font-size:1.15rem;" id="latP50">—</div><div class="text-secondary" style="font-size:.7rem;">p50</div></div>
+              <div class="col"><div class="metric-value" style="font-size:1.15rem;color:var(--accent-amber-dark);" id="latP95">—</div><div class="text-secondary" style="font-size:.7rem;">p95</div></div>
+              <div class="col"><div class="metric-value" style="font-size:1.15rem;color:var(--accent-coral);" id="latP99">—</div><div class="text-secondary" style="font-size:.7rem;">p99</div></div>
+            </div>
+            <div class="sparkline-box" style="height:90px;"><canvas id="latencyChart"></canvas></div>
+            <div class="ops-row mt-1"><span class="text-secondary">2xx / 4xx / 5xx</span><span class="fw-700" id="statusSplitLine">— / — / —</span></div>
+          </div>
+        </div>
+
+        <!-- Process -->
+        <div class="col-12 col-lg-4">
+          <div class="ops-card">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h6 class="mb-0"><i class="bi bi-cpu-fill me-2"></i>Process</h6>
+              <span class="health-status" style="color:var(--accent-teal-dark);"><span class="pulse-dot"></span>Running</span>
+            </div>
+            <div class="ops-row"><span class="text-secondary">Uptime</span><span class="fw-700" id="processUptime">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Since</span><span class="fw-700" id="processSince">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Memory (RSS)</span><span class="fw-700" id="memRss">—</span></div>
+            <div class="ops-row"><span class="text-secondary">Node version</span><span class="fw-700" style="font-family:ui-monospace,monospace;" id="nodeVersion">—</span></div>
+            <div class="ops-row"><span class="text-secondary">PID</span><span class="fw-700" style="font-family:ui-monospace,monospace;" id="processPid">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-6">
+          <div class="surface-card">
+            <div class="section-title-row"><h6><i class="bi bi-fire me-1" style="color:var(--accent-coral);"></i>Hottest endpoints</h6><span class="text-secondary" style="font-size:.75rem;">by req/min</span></div>
+            <div class="table-responsive">
+              <table class="table table-modern mb-0">
+                <thead><tr><th>Endpoint</th><th>Req (5 min)</th><th>Avg latency</th><th>Traffic</th></tr></thead>
+                <tbody id="hottestEndpointsBody"><tr><td colspan="4"><div class="section-loading" style="min-height:80px;"></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="surface-card">
+            <div class="section-title-row"><h6><i class="bi bi-hourglass-bottom me-1" style="color:var(--accent-amber-dark);"></i>Slowest endpoints</h6><span class="text-secondary" style="font-size:.75rem;">p95 latency</span></div>
+            <div class="table-responsive">
+              <table class="table table-modern mb-0">
+                <thead><tr><th>Endpoint</th><th>p95</th><th>Requests (15 min)</th><th></th></tr></thead>
+                <tbody id="slowestEndpointsBody"><tr><td colspan="4"><div class="section-loading" style="min-height:80px;"></div></td></tr></tbody>
+              </table>
+            </div>
+            <p class="text-secondary mt-2 mb-0" style="font-size:.75rem;"><i class="bi bi-lightbulb me-1"></i>See db/queries/scaling_notes.sql for the materialized-view fix if report endpoints show up here under real load.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/chartjs/chart.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/live-ops-data.js"></script>
+<script>
+  MET.guardAuth('admin');
+</script>
+</body>
+</html>

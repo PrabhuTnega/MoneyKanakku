@@ -1,0 +1,13 @@
+[
+  {
+    "_comment": "TEMPLATE — fill in once the Android WebView APK exists, then this file must be served at https://YOURDOMAIN.com/.well-known/assetlinks.json (exactly that path, over HTTPS) for Android App Links to verify. Until this is correctly hosted with real values, clicking the password-reset link (or any https:// link to this site) on an Android device will open the system browser instead of the app — that's expected and harmless, just not the 'opens inside the app' experience. See the reference note in api/README.md for the full explanation of why a WebView-wrapper APK needs this (not something a web codebase alone can configure).",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "REPLACE_WITH_YOUR_APK_PACKAGE_NAME (e.g. com.moneykanakku.app)",
+      "sha256_cert_fingerprints": [
+        "REPLACE_WITH_YOUR_APK_SIGNING_CERT_SHA256_FINGERPRINT (get via: keytool -list -v -keystore your.keystore, or your WebView-wrapper tool's dashboard if using Median/GoNative/Appilix/etc.)"
+      ]
+    }
+  }
+]

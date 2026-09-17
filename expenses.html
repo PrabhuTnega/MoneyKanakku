@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Transactions — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span><span class="badge-count badge rounded-pill" style="background:var(--accent-coral);font-size:.65rem;">3</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+      <div class="topbar-title">Transactions</div>
+      <button class="icon-btn ripple-surface" data-bs-toggle="modal" data-bs-target="#filterSheet"><i class="bi bi-sliders"></i></button>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Transactions</h1>
+      <div class="search-box">
+        <i class="bi bi-search text-muted-c"></i>
+        <input type="text" placeholder="Search transactions..." id="searchDesktop">
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="btn btn-outline-soft ripple-surface"><i class="bi bi-download me-1"></i>Export</button>
+        <a href="expense-form.html" class="btn btn-primary ripple-surface"><i class="bi bi-plus-lg me-1"></i>Add Transaction</a>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <!-- Month selector + totals -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <button class="icon-btn ripple-surface" id="monthPrev"><i class="bi bi-chevron-left"></i></button>
+        <div class="text-center">
+          <div class="fw-800 font-display" id="monthLabel">—</div>
+          <div class="text-secondary" style="font-size:.75rem;" id="monthSummaryLine">—</div>
+        </div>
+        <button class="icon-btn ripple-surface" id="monthNext"><i class="bi bi-chevron-right"></i></button>
+      </div>
+
+      <!-- Type filter: All / Income / Expense -->
+      <div class="segmented mb-3" style="max-width:340px;" id="typeFilter">
+        <button class="active" data-type="all">All</button>
+        <button data-type="income"><i class="bi bi-arrow-up-circle-fill me-1" style="color:var(--income-color);"></i>Income</button>
+        <button data-type="expense"><i class="bi bi-arrow-down-circle-fill me-1" style="color:var(--accent-coral);"></i>Expense</button>
+      </div>
+
+      <!-- Category filter chips (desktop + mobile) -->
+      <div class="chip-scroll mb-3" data-chip-group id="categoryChips">
+        <button class="filter-chip active" data-cat="all">All Categories</button>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-8">
+
+          <div class="d-none d-lg-flex align-items-center justify-content-between mb-3">
+            <div></div>
+            <div class="text-secondary" style="font-size:.82rem;" id="showingCount">—</div>
+          </div>
+
+          <div id="txnGroups"><div class="section-loading" style="min-height:200px;"></div></div>
+
+          <div class="text-center py-3 d-none" id="loadMoreWrap">
+            <button class="btn btn-outline-soft ripple-surface px-4" id="loadMoreBtn">Load more</button>
+          </div>
+
+        </div>
+
+        <!-- Desktop summary sidebar -->
+        <div class="col-12 col-lg-4 d-none d-lg-block">
+          <div class="surface-card mb-4">
+            <h6 class="mb-3">This month</h6>
+            <div class="d-flex justify-content-between py-2"><span class="text-secondary" style="font-size:.85rem;">Income</span><span class="fw-700" style="color:var(--income-color);" id="sideIncome">—</span></div>
+            <div class="d-flex justify-content-between py-2"><span class="text-secondary" style="font-size:.85rem;">Expense</span><span class="fw-700" style="color:var(--expense-color);" id="sideExpense">—</span></div>
+            <hr class="divider my-1">
+            <div class="d-flex justify-content-between py-2"><span class="fw-700" style="font-size:.85rem;">Net savings</span><span class="fw-700" id="sideNet">—</span></div>
+            <hr class="divider my-1">
+            <div class="d-flex justify-content-between py-2"><span class="text-secondary" style="font-size:.85rem;">Transactions</span><span class="fw-700" id="sideCount">—</span></div>
+          </div>
+          <div class="surface-card">
+            <h6 class="mb-3">Payment methods</h6>
+            <div id="sidePaymentMethods"><p class="text-secondary" style="font-size:.82rem;">No expenses recorded yet this month.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item active" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap"><a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a></div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+
+  <a href="expense-form.html" class="btn btn-primary rounded-circle fab-desktop d-none d-lg-flex align-items-center justify-content-center ripple-surface" style="width:60px;height:60px;box-shadow:0 14px 30px -8px rgba(108,92,231,.55);">
+    <i class="bi bi-plus-lg fs-4"></i>
+  </a>
+</div>
+
+<!-- Filter Bottom Sheet (mobile) -->
+<div class="modal sheet-mobile fade" id="filterSheet" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Filter & Sort</h6>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <label class="form-label">Sort by</label>
+      <div class="segmented mb-3">
+        <button class="active">Date</button>
+        <button>Amount</button>
+        <button>Category</button>
+      </div>
+      <label class="form-label">Category</label>
+      <div class="chip-scroll mb-3" data-chip-group data-chip-multi="true">
+        <button class="filter-chip active">All</button>
+        <button class="filter-chip">Food</button>
+        <button class="filter-chip">Transport</button>
+        <button class="filter-chip">Shopping</button>
+        <button class="filter-chip">Bills</button>
+      </div>
+      <label class="form-label">Payment method</label>
+      <div class="chip-scroll mb-4" data-chip-group data-chip-multi="true">
+        <button class="filter-chip active">All</button>
+        <button class="filter-chip">Card</button>
+        <button class="filter-chip">UPI</button>
+        <button class="filter-chip">Cash</button>
+        <button class="filter-chip">Netbanking</button>
+      </div>
+      <button class="btn btn-primary btn-lg w-100 ripple-surface" data-bs-dismiss="modal">Apply Filters</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/expenses-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

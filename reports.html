@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Reports & Analytics — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span><span class="badge-count badge rounded-pill" style="background:var(--accent-coral);font-size:.65rem;">3</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+      <div class="topbar-title">Reports</div>
+      <button class="icon-btn ripple-surface" data-bs-toggle="modal" data-bs-target="#exportSheet"><i class="bi bi-download"></i></button>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Reports & Analytics</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="btn btn-outline-soft ripple-surface" data-bs-toggle="modal" data-bs-target="#exportSheet"><i class="bi bi-download me-1"></i>Export</button>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <ul class="nav nav-tabs pill-tabs mb-4" id="reportTabs">
+        <li class="nav-item"><button class="nav-link active" data-tab="monthly">Monthly</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="category">Category-wise</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="payment">Payment Method</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="trend">Trend</button></li>
+        <li class="nav-item"><button class="nav-link" data-tab="yearly">Yearly Summary</button></li>
+      </ul>
+
+      <!-- Monthly Report -->
+      <div class="report-pane" id="pane-monthly">
+        <div class="row row-cols-2 row-cols-md-5 g-3 mb-1">
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-arrow-up-circle-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="monthlyIncome">—</div><div class="stat-label">Income</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-arrow-down-circle-fill"></i></div><div class="stat-value" style="color:var(--expense-color);" id="monthlyExpense">—</div><div class="stat-label">Expense</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-piggy-bank-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="monthlyNet">—</div><div class="stat-label">Net savings</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-amber"><i class="bi bi-wallet2"></i></div><div class="stat-value" id="monthlyTotalAmount">—</div><div class="stat-label">Total amount</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-blue"><i class="bi bi-receipt"></i></div><div class="stat-value" id="monthlyTxnCount">—</div><div class="stat-label">Transactions</div></div></div>
+        </div>
+        <div class="text-secondary mb-4" style="font-size:.72rem;"><i class="bi bi-info-circle me-1"></i>Total amount = Income + Expense combined (this is total money movement, not what you kept — see Net savings for that).</div>
+
+        <!-- This month vs last month -->
+        <div class="surface-card mb-4">
+          <div class="section-title-row"><h6>This month vs last month</h6></div>
+          <div class="row row-cols-1 row-cols-md-3 g-3">
+            <div class="col">
+              <div class="text-secondary" style="font-size:.78rem;">Total amount</div>
+              <div class="fw-800 font-display" style="font-size:1.1rem;" id="cmpTotalNow">—</div>
+              <div style="font-size:.75rem;" id="cmpTotalVsPrev">—</div>
+            </div>
+            <div class="col">
+              <div class="text-secondary" style="font-size:.78rem;">Income</div>
+              <div class="fw-800 font-display" style="font-size:1.1rem;color:var(--income-color);" id="cmpIncomeNow">—</div>
+              <div style="font-size:.75rem;" id="cmpIncomeVsPrev">—</div>
+            </div>
+            <div class="col">
+              <div class="text-secondary" style="font-size:.78rem;">Expense</div>
+              <div class="fw-800 font-display" style="font-size:1.1rem;color:var(--expense-color);" id="cmpExpenseNow">—</div>
+              <div style="font-size:.75rem;" id="cmpExpenseVsPrev">—</div>
+            </div>
+          </div>
+          <div class="text-secondary mt-3" style="font-size:.72rem;" id="cmpPrevLabel"></div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12 col-lg-7">
+            <div class="surface-card">
+              <div class="section-title-row"><h6 id="dailyChartTitle">Daily spending</h6></div>
+              <div class="chart-box" style="height:260px;"><canvas id="dailyBarChart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-5">
+            <div class="surface-card">
+              <div class="section-title-row"><h6>Week-over-week</h6></div>
+              <div class="chart-box" style="height:260px;"><canvas id="weekChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction Details — day-to-day ledger for any date range, not just this calendar month -->
+        <div class="surface-card mt-4">
+          <div class="section-title-row"><h6>Transaction Details</h6></div>
+          <div class="row g-2 align-items-end mb-3">
+            <div class="col-6 col-md-3">
+              <label class="form-label">From</label>
+              <input type="date" class="form-control" id="txnFromDate">
+            </div>
+            <div class="col-6 col-md-3">
+              <label class="form-label">To</label>
+              <input type="date" class="form-control" id="txnToDate">
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                <button class="btn btn-outline-soft ripple-surface btn-sm" id="txnListCsvBtn"><i class="bi bi-filetype-csv me-1"></i>CSV</button>
+                <button class="btn btn-outline-soft ripple-surface btn-sm" id="txnListExcelBtn"><i class="bi bi-file-earmark-excel me-1"></i>Excel</button>
+                <button class="btn btn-outline-soft ripple-surface btn-sm" id="txnListPdfBtn"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</button>
+              </div>
+            </div>
+          </div>
+          <div class="text-secondary mb-2" style="font-size:.82rem;" id="txnListSummary">Loading…</div>
+          <div class="table-responsive" style="max-height:480px;overflow-y:auto;">
+            <table class="table table-modern mb-0">
+              <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th>Payment Method</th><th class="text-end">Amount</th></tr></thead>
+              <tbody id="txnListBody"><tr><td colspan="6"><div class="section-loading" style="min-height:100px;"></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Report -->
+      <div class="report-pane d-none" id="pane-category">
+        <div class="segmented mb-4" style="max-width:280px;" id="catTypeToggle">
+          <button class="active" data-type="expense"><i class="bi bi-arrow-down-circle-fill me-1" style="color:var(--accent-coral);"></i>Expense</button>
+          <button data-type="income"><i class="bi bi-arrow-up-circle-fill me-1" style="color:var(--income-color);"></i>Income</button>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-lg-5">
+            <div class="surface-card">
+              <div class="section-title-row"><h6 id="catChartTitle">Expense breakdown</h6></div>
+              <div class="chart-box" style="height:280px;"><canvas id="catPie"></canvas></div>
+              <div id="catLegendReport" class="d-flex flex-column gap-2 mt-3"></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-7">
+            <div class="surface-card">
+              <div class="section-title-row"><h6>Category detail</h6></div>
+              <div class="table-responsive">
+                <table class="table table-modern mb-0">
+                  <thead><tr><th>Category</th><th>Transactions</th><th>Total</th><th id="catShareHeader">% of spend</th></tr></thead>
+                  <tbody id="catTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method Report -->
+      <div class="report-pane d-none" id="pane-payment">
+        <div class="row g-4">
+          <div class="col-12 col-lg-5">
+            <div class="surface-card">
+              <div class="section-title-row"><h6>Spend by payment method</h6></div>
+              <div class="chart-box" style="height:260px;"><canvas id="paymentDonut"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-7">
+            <div class="surface-card">
+              <h6 class="mb-3">Breakdown</h6>
+              <div id="paymentBreakdown"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Report -->
+      <div class="report-pane d-none" id="pane-trend">
+        <div class="surface-card mb-4">
+          <div class="section-title-row">
+            <h6>Income vs Expense — last 12 months</h6>
+            <div class="d-flex gap-3" style="font-size:.78rem;">
+              <span class="d-flex align-items-center gap-1"><span class="legend-dot" style="background:var(--income-color);"></span>Income</span>
+              <span class="d-flex align-items-center gap-1"><span class="legend-dot" style="background:var(--expense-color);"></span>Expense</span>
+            </div>
+          </div>
+          <div class="chart-box" style="height:300px;"><canvas id="yearTrendChart"></canvas></div>
+        </div>
+        <div class="row row-cols-2 row-cols-md-4 g-3">
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-arrow-up-circle-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="trendAvgIncome">—</div><div class="stat-label">Avg income / month</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-arrow-down-circle-fill"></i></div><div class="stat-value" style="color:var(--expense-color);" id="trendAvgExpense">—</div><div class="stat-label">Avg expense / month</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-piggy-bank-fill"></i></div><div class="stat-value" style="color:var(--income-color);" id="trendAvgNet">—</div><div class="stat-label">Avg net savings</div></div></div>
+          <div class="col"><div class="stat-tile"><div class="stat-icon chip-blue"><i class="bi bi-graph-up"></i></div><div class="stat-value" id="trendHighest">—</div><div class="stat-label">Highest expense month</div></div></div>
+        </div>
+      </div>
+
+      <!-- Yearly Summary -->
+      <div class="report-pane d-none" id="pane-yearly">
+        <div class="surface-card mb-4">
+          <div class="section-title-row"><h6 id="yearlyTitle">Yearly summary</h6></div>
+          <div class="chart-box" style="height:280px;"><canvas id="yearlyBarChart"></canvas></div>
+        </div>
+        <div class="surface-card">
+          <div class="table-responsive">
+            <table class="table table-modern mb-0">
+              <thead><tr><th>Month</th><th>Income</th><th>Expense</th><th>Budget</th><th>Budget Variance</th><th>Net Savings</th></tr></thead>
+              <tbody id="yearlyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap"><a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a></div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+</div>
+
+<!-- Export bottom sheet -->
+<div class="modal sheet-mobile fade" id="exportSheet" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Export report</h6>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <button class="d-flex align-items-center gap-3 w-100 btn text-start ripple-surface p-3 mb-2" style="background:var(--surface-soft);border-radius:var(--radius-md);" id="exportCsvBtn">
+        <div class="icon-chip chip-teal"><i class="bi bi-filetype-csv"></i></div>
+        <div><div class="fw-700" style="font-size:.9rem;">Export as CSV</div><div class="text-secondary" style="font-size:.75rem;">Raw data, spreadsheet-friendly</div></div>
+      </button>
+      <button class="d-flex align-items-center gap-3 w-100 btn text-start ripple-surface p-3 mb-2" style="background:var(--surface-soft);border-radius:var(--radius-md);" id="exportExcelBtn">
+        <div class="icon-chip chip-blue"><i class="bi bi-file-earmark-excel-fill"></i></div>
+        <div><div class="fw-700" style="font-size:.9rem;">Export as Excel</div><div class="text-secondary" style="font-size:.75rem;">Formatted workbook, opens in Excel/Sheets</div></div>
+      </button>
+      <button class="d-flex align-items-center gap-3 w-100 btn text-start ripple-surface p-3" style="background:var(--surface-soft);border-radius:var(--radius-md);" id="exportPdfBtn">
+        <div class="icon-chip chip-coral"><i class="bi bi-file-earmark-pdf-fill"></i></div>
+        <div><div class="fw-700" style="font-size:.9rem;">Export as PDF</div><div class="text-secondary" style="font-size:.75rem;">Print-ready summary report</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/vendor/chartjs/chart.umd.min.js"></script>
+<script src="assets/vendor/xlsx/xlsx.full.min.js"></script>
+<script src="assets/vendor/jspdf/jspdf.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/export-utils.js"></script>
+<script src="assets/js/reports-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+
+  function currentExport(key){
+    const data = (window.MET.reportExports || {})[key || window.MET.activeReportTab || "monthly"];
+    if(!data){ MET.toastError("Give the report a moment to finish loading, then try again."); return null; }
+    if(!data.rows.length){ MET.toastError("Nothing to export — no data for the current period/range."); return null; }
+    return data;
+  }
+
+  $("#exportCsvBtn").on("click", function(){
+    const data = currentExport();
+    if(!data) return;
+    MET.exportCSV(MET.exportFilename(data.title, "csv"), data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("CSV downloaded.");
+    bootstrap.Modal.getInstance(document.getElementById("exportSheet")).hide();
+  });
+  $("#exportExcelBtn").on("click", function(){
+    const data = currentExport();
+    if(!data) return;
+    MET.exportExcel(MET.exportFilename(data.title, "xlsx"), data.title, data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("Excel file downloaded.");
+    bootstrap.Modal.getInstance(document.getElementById("exportSheet")).hide();
+  });
+  $("#exportPdfBtn").on("click", function(){
+    const data = currentExport();
+    if(!data) return;
+    MET.exportPDF(MET.exportFilename(data.title, "pdf"), data.title, data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("PDF downloaded.");
+    bootstrap.Modal.getInstance(document.getElementById("exportSheet")).hide();
+  });
+
+  // Transaction Details ledger — its own export buttons, independent of
+  // the tab-level Export sheet above (this covers whatever from/to range
+  // is picked, which can span several months, not just the active tab).
+  $("#txnListCsvBtn").on("click", function(){
+    const data = currentExport("transactionList");
+    if(!data) return;
+    MET.exportCSV(MET.exportFilename(data.title, "csv"), data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("CSV downloaded.");
+  });
+  $("#txnListExcelBtn").on("click", function(){
+    const data = currentExport("transactionList");
+    if(!data) return;
+    MET.exportExcel(MET.exportFilename(data.title, "xlsx"), "Transactions", data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("Excel file downloaded.");
+  });
+  $("#txnListPdfBtn").on("click", function(){
+    const data = currentExport("transactionList");
+    if(!data) return;
+    MET.exportPDF(MET.exportFilename(data.title, "pdf"), data.title, data.headers, data.rows, { summary: data.summary, note: data.note });
+    MET.toastSuccess("PDF downloaded.");
+  });
+</script>
+</body>
+</html>

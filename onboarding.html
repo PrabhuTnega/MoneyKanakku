@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Welcome — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+  .ob-shell{ min-height:100vh; display:flex; flex-direction:column; max-width:520px; margin:0 auto; }
+  .ob-track{ display:flex; flex:1 1 auto; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
+  .ob-track::-webkit-scrollbar{ display:none; }
+  .ob-slide{ flex:0 0 100%; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 30px 10px; text-align:center; }
+  .ob-art{ width:220px; height:220px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:34px; position:relative; }
+  .ob-art i{ font-size:5rem; }
+  .ob-art::after{ content:''; position:absolute; inset:-14px; border-radius:50%; border:2px dashed currentColor; opacity:.25; animation:spin 22s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .skip-link{ position:absolute; top:calc(20px + var(--safe-top)); right:20px; font-weight:700; font-size:.82rem; color:var(--text-secondary); z-index:2; }
+</style>
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="ob-shell position-relative page-enter">
+  <a href="login.html" class="skip-link" onclick="localStorage.setItem('met_onboarded','1')">Skip</a>
+
+  <div class="ob-track" id="obTrack">
+    <div class="ob-slide">
+      <div class="ob-art chip-violet"><i class="bi bi-graph-up-arrow"></i></div>
+      <h3 class="font-display fw-800 mb-2">Track every rupee, effortlessly</h3>
+      <p class="text-secondary" style="max-width:320px;">Log daily expenses in seconds and see exactly where your money goes each month.</p>
+    </div>
+    <div class="ob-slide">
+      <div class="ob-art chip-teal"><i class="bi bi-pie-chart-fill"></i></div>
+      <h3 class="font-display fw-800 mb-2">Budgets that keep you in control</h3>
+      <p class="text-secondary" style="max-width:320px;">Set monthly & category budgets and get visual warnings before you overspend.</p>
+    </div>
+    <div class="ob-slide">
+      <div class="ob-art chip-amber"><i class="bi bi-bar-chart-line-fill"></i></div>
+      <h3 class="font-display fw-800 mb-2">Insights that actually help</h3>
+      <p class="text-secondary" style="max-width:320px;">Beautiful reports, trends & exports so you always know your financial story.</p>
+    </div>
+  </div>
+
+  <div class="px-4 pb-4" style="padding-bottom:calc(24px + var(--safe-bottom)) !important;">
+    <div class="onboarding-dots mb-4" id="obDots">
+      <span class="active"></span><span></span><span></span>
+    </div>
+    <button class="btn btn-primary btn-lg w-100 ripple-surface" id="obNext">Next</button>
+    <div class="text-center mt-3">
+      <span class="text-secondary" style="font-size:.85rem;">Already have an account?</span>
+      <a href="login.html" class="fw-700" style="color:var(--brand-500);font-size:.85rem;" onclick="localStorage.setItem('met_onboarded','1')"> Sign in</a>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+  const track = document.getElementById('obTrack');
+  const dots = document.querySelectorAll('#obDots span');
+  const nextBtn = document.getElementById('obNext');
+  let idx = 0;
+  function goTo(i){
+    idx = Math.max(0, Math.min(2, i));
+    track.scrollTo({ left: idx * track.clientWidth, behavior:'smooth' });
+    dots.forEach((d,n)=>d.classList.toggle('active', n===idx));
+    nextBtn.textContent = idx === 2 ? 'Get Started' : 'Next';
+  }
+  nextBtn.addEventListener('click', ()=>{
+    if(idx === 2){ localStorage.setItem('met_onboarded','1'); window.location.href = 'register.html'; }
+    else goTo(idx+1);
+  });
+  track.addEventListener('scroll', ()=>{
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach((d,n)=>d.classList.toggle('active', n===i));
+    nextBtn.textContent = i === 2 ? 'Get Started' : 'Next';
+    idx = i;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Manage Categories — MoneyKanakku Admin</title>
+<meta name="theme-color" content="#181828">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark" style="background:linear-gradient(135deg,#181828,#4634b0);"><i class="bi bi-shield-lock-fill"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Admin Console</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Administration</div>
+      <a href="admin-dashboard.html" class="side-link" data-nav-page="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span class="nav-label">Overview</span></a>
+      <a href="admin-users.html" class="side-link" data-nav-page="admin-users.html"><i class="bi bi-people-fill"></i><span class="nav-label">Users</span></a>
+      <a href="admin-categories.html" class="side-link active" data-nav-page="admin-categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="#system" class="side-link"><i class="bi bi-sliders"></i><span class="nav-label">System Config</span></a>
+      <a href="admin-live-ops.html" class="side-link" data-nav-page="admin-live-ops.html"><i class="bi bi-activity"></i><span class="nav-label">Live Ops</span></a>
+      <a href="admin-audit-logs.html" class="side-link" data-nav-page="admin-audit-logs.html"><i class="bi bi-clock-history"></i><span class="nav-label">Audit Logs</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="dashboard.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Back to App</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">A</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Admin User</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">admin@expensio.app</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <a href="admin-dashboard.html" class="icon-btn ripple-surface"><i class="bi bi-arrow-left"></i></a>
+      <div class="topbar-title">Categories</div>
+      <button class="icon-btn ripple-surface" data-bs-toggle="modal" data-bs-target="#newCatModal"><i class="bi bi-plus-lg"></i></button>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Global Categories</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="btn btn-primary ripple-surface" data-bs-toggle="modal" data-bs-target="#newCatModal"><i class="bi bi-plus-lg me-1"></i>Add Category</button>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="segmented mb-4" style="max-width:280px;" id="adminCatTypeToggle">
+        <button class="active" data-type="expense"><i class="bi bi-arrow-down-circle-fill me-1" style="color:var(--accent-coral);"></i>Expense</button>
+        <button data-type="income"><i class="bi bi-arrow-up-circle-fill me-1" style="color:var(--income-color);"></i>Income</button>
+      </div>
+
+      <!-- Expense categories -->
+      <div class="surface-card mb-5" id="adminExpenseCatTable">
+        <div class="table-responsive">
+          <table class="table table-modern mb-0">
+            <thead><tr><th>Category</th><th>Status</th><th></th></tr></thead>
+            <tbody><tr><td colspan="3"><div class="section-loading" style="min-height:100px;"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Income categories -->
+      <div class="surface-card mb-5 d-none" id="adminIncomeCatTable">
+        <div class="table-responsive">
+          <table class="table table-modern mb-0">
+            <thead><tr><th>Category</th><th>Status</th><th></th></tr></thead>
+            <tbody><tr><td colspan="3"><div class="section-loading" style="min-height:100px;"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="system"></div>
+      <div class="section-title-row"><h6><i class="bi bi-sliders me-1"></i>System Configuration</h6></div>
+      <div class="row g-4">
+        <div class="col-12 col-lg-6">
+          <div class="surface-card mb-4">
+            <h6 class="mb-3">General</h6>
+            <div class="mb-3"><label class="form-label">Default currency</label><select class="form-select" id="setDefaultCurrency"><option value="INR">₹ INR</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
+            <div class="mb-3"><label class="form-label">Default timezone</label><select class="form-select" id="setDefaultTimezone"><option value="Asia/Kolkata">Asia/Kolkata (IST)</option><option value="UTC">UTC</option></select></div>
+            <div class="mb-0"><label class="form-label">Fiscal / budget month start day</label><input type="number" class="form-control" id="setFiscalDay" min="1" max="28"></div>
+          </div>
+          <div class="surface-card">
+            <h6 class="mb-3">Data retention</h6>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">Keep deleted transactions</div><div class="text-secondary" style="font-size:.74rem;">Preserve audit trail for compliance</div></div>
+              <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="setKeepDeleted" style="cursor:pointer;"></div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">Retention period</div></div>
+              <select class="form-select" style="width:auto;" id="setRetentionYears"><option value="7">7 years</option><option value="5">5 years</option><option value="1">1 year</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6">
+          <div class="surface-card mb-4">
+            <h6 class="mb-3">Security policy</h6>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">Session timeout</div><div class="text-secondary" style="font-size:.74rem;">Stored for reference — superseded by the access/refresh token TTLs since the 2026-09-12 auth rework</div></div>
+              <select class="form-select" style="width:auto;" id="setSessionTimeout"><option value="30">30 minutes</option><option value="60">1 hour</option><option value="240">4 hours</option></select>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">Minimum password length</div></div>
+              <select class="form-select" style="width:auto;" id="setMinPasswordLength"><option value="8">8</option><option value="10">10</option><option value="12">12</option></select>
+            </div>
+          </div>
+          <div class="surface-card">
+            <h6 class="mb-3">Notifications</h6>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">System-wide announcements</div></div>
+              <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="setAnnouncements" style="cursor:pointer;"></div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between py-2">
+              <div><div class="fw-700" style="font-size:.88rem;">Email digest to admins</div></div>
+              <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="setEmailDigest" style="cursor:pointer;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-end mt-4 pb-2">
+        <button class="btn btn-primary btn-lg ripple-surface px-4" id="saveConfigBtn">Save Configuration</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal sheet-mobile fade" id="newCatModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-800 mb-0">Add Global Category</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="newCatForm" novalidate>
+        <div class="text-center mb-3">
+          <div class="icon-chip-lg mx-auto" id="newCatPreview" style="width:56px;height:56px;font-size:1.5rem;background:rgba(42,120,214,.14);color:var(--chart-1-blue);"><i class="bi bi-tag-fill"></i></div>
+        </div>
+        <label class="form-label px-1">Category type</label>
+        <div class="segmented mb-3" id="newCatTypeToggle">
+          <button type="button" class="active" data-modal-type="expense">Expense</button>
+          <button type="button" data-modal-type="income">Income</button>
+        </div>
+        <div class="mb-3"><label class="form-label">Category name</label><input type="text" name="name" id="newCatName" class="form-control" placeholder="e.g. Travel" maxlength="60" required></div>
+        <label class="form-label px-1">Icon</label>
+        <div class="d-flex flex-wrap gap-2 mb-3" id="newCatIconPicker">
+          <div class="icon-pick selected" data-icon="bi-tag-fill"><i class="bi bi-tag-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-airplane-fill"><i class="bi bi-airplane-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-cart-fill"><i class="bi bi-cart-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-controller"><i class="bi bi-controller"></i></div>
+          <div class="icon-pick" data-icon="bi-cup-hot-fill"><i class="bi bi-cup-hot-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-house-door-fill"><i class="bi bi-house-door-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-briefcase-fill"><i class="bi bi-briefcase-fill"></i></div>
+          <div class="icon-pick" data-icon="bi-three-dots"><i class="bi bi-three-dots"></i></div>
+        </div>
+        <label class="form-label px-1">Color</label>
+        <div class="d-flex flex-wrap gap-2 mb-4" id="newCatColorPicker">
+          <div class="swatch selected" style="background:var(--chart-1-blue);" data-color="var(--chart-1-blue)"><i class="bi bi-check-lg"></i></div>
+          <div class="swatch" style="background:var(--chart-2-orange);" data-color="var(--chart-2-orange)"></div>
+          <div class="swatch" style="background:var(--chart-3-aqua);" data-color="var(--chart-3-aqua)"></div>
+          <div class="swatch" style="background:var(--chart-4-yellow);" data-color="var(--chart-4-yellow)"></div>
+          <div class="swatch" style="background:var(--chart-5-magenta);" data-color="var(--chart-5-magenta)"></div>
+          <div class="swatch" style="background:var(--chart-6-green);" data-color="var(--chart-6-green)"></div>
+          <div class="swatch" style="background:var(--chart-7-violet);" data-color="var(--chart-7-violet)"></div>
+          <div class="swatch" style="background:var(--chart-8-red);" data-color="var(--chart-8-red)"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface" id="newCatSaveBtn">Add Category</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Permanent delete confirmation -->
+<div class="modal sheet-mobile fade" id="adminDeleteCatModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-800 mb-2">Permanently delete <span id="adminDeleteCatName">this category</span>?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;">This is a global category every user can see. It can't be deleted while any user's transaction or recurring rule still uses it — deactivate it instead if you just want to hide it from new entries. This action cannot be undone.</p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" id="adminConfirmDeleteCatBtn" style="background:var(--accent-coral);border:0;">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script src="assets/js/admin-categories-data.js"></script>
+<script>
+  MET.guardAuth('admin');
+  document.getElementById('adminCatTypeToggle').querySelectorAll('button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const type = this.getAttribute('data-type');
+      document.getElementById('adminExpenseCatTable').classList.toggle('d-none', type !== 'expense');
+      document.getElementById('adminIncomeCatTable').classList.toggle('d-none', type !== 'income');
+    });
+  });
+</script>
+</body>
+</html>

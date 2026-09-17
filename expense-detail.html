@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Transaction Details — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<header class="mobile-topbar d-lg-none">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('expenses.html')"><i class="bi bi-arrow-left"></i></button>
+  <div class="topbar-title">Transaction Details</div>
+  <a href="#" id="editLinkMobile" class="icon-btn ripple-surface"><i class="bi bi-pencil"></i></a>
+</header>
+
+<div class="container-app d-none d-lg-flex align-items-center gap-3 py-4">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('expenses.html')"><i class="bi bi-arrow-left"></i></button>
+  <h1 class="page-heading mb-0">Transaction Details</h1>
+</div>
+
+<main style="max-width:640px;margin:0 auto;" class="container-app pb-5 page-enter">
+
+  <div class="surface-card text-center py-5 mb-4">
+    <div class="icon-chip-lg chip-blue mx-auto mb-3" id="detailIcon" style="width:64px;height:64px;font-size:1.7rem;"><i class="bi bi-cup-hot-fill"></i></div>
+    <div class="text-secondary fw-600 mb-1" style="font-size:.85rem;" id="detailTitle">Swiggy Order</div>
+    <div class="font-display fw-800" style="font-size:2.4rem;color:var(--expense-color);" id="detailAmount">-₹480</div>
+    <span class="badge-soft b-violet mt-2" id="detailCategoryBadge">Food</span>
+  </div>
+
+  <div class="surface-card mb-4">
+    <div class="d-flex justify-content-between py-3">
+      <span class="text-secondary d-flex align-items-center gap-2" style="font-size:.85rem;"><i class="bi bi-calendar3"></i> Date & Time</span>
+      <span class="fw-700" style="font-size:.85rem;" id="detailDate">Sep 11, 2026 — 1:20 PM</span>
+    </div>
+    <hr class="divider">
+    <div class="d-flex justify-content-between py-3">
+      <span class="text-secondary d-flex align-items-center gap-2" style="font-size:.85rem;"><i class="bi bi-wallet2"></i> Payment method</span>
+      <span class="fw-700" style="font-size:.85rem;" id="detailMethod">UPI</span>
+    </div>
+    <hr class="divider">
+    <div class="d-flex justify-content-between py-3">
+      <span class="text-secondary d-flex align-items-center gap-2" style="font-size:.85rem;"><i class="bi bi-grid-3x3-gap-fill"></i> Category</span>
+      <span class="fw-700" style="font-size:.85rem;" id="detailCategory">Food</span>
+    </div>
+    <hr class="divider">
+    <div class="d-flex justify-content-between py-3">
+      <span class="text-secondary d-flex align-items-center gap-2" style="font-size:.85rem;"><i class="bi bi-arrow-repeat"></i> Recurring</span>
+      <span class="fw-700" style="font-size:.85rem;" id="detailRecurring">No</span>
+    </div>
+    <hr class="divider">
+    <div class="py-3">
+      <span class="text-secondary d-flex align-items-center gap-2 mb-2" style="font-size:.85rem;"><i class="bi bi-card-text"></i> Description / Notes</span>
+      <p class="mb-0" style="font-size:.88rem;" id="detailNotes">Lunch order for the team meeting — 2 combo meals with extra drinks.</p>
+    </div>
+  </div>
+
+  <!-- Receipt display — commented out for now: no storage backend has been
+  decided yet for TransactionAttachment, so there's nothing real to show
+  here. Maybe we'll wire it up in future.
+  <div class="surface-card mb-4">
+    <h6 class="mb-3">Receipt</h6>
+    <div class="d-flex align-items-center justify-content-center border rounded-xl" style="height:140px;border-style:dashed !important;border-color:var(--border-color) !important;">
+      <div class="text-center text-secondary">
+        <i class="bi bi-receipt fs-3 d-block mb-1"></i>
+        <span style="font-size:.8rem;">No receipt attached</span>
+      </div>
+    </div>
+  </div>
+  -->
+
+  <div class="surface-card mb-4" style="font-size:.75rem;color:var(--text-muted);">
+    <div class="d-flex justify-content-between py-1"><span>Created</span><span>Sep 11, 2026, 1:21 PM</span></div>
+    <div class="d-flex justify-content-between py-1"><span>Last updated</span><span>Sep 11, 2026, 1:21 PM</span></div>
+  </div>
+
+  <div class="d-flex gap-3">
+    <a href="#" id="editLinkDesktop" class="btn btn-soft btn-lg flex-fill ripple-surface"><i class="bi bi-pencil me-1"></i> Edit</a>
+    <button class="btn btn-danger-soft btn-lg flex-fill ripple-surface" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash me-1"></i> Delete</button>
+  </div>
+</main>
+
+<!-- Delete confirmation -->
+<div class="modal sheet-mobile fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-800 mb-2" id="deleteModalTitle">Delete this expense?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;">This action cannot be undone. The transaction will be permanently removed from your records.</p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" id="confirmDeleteBtn" style="background:var(--accent-coral);border:0;">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/expense-detail-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

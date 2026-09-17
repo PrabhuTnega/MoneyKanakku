@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>New Category — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<header class="mobile-topbar d-lg-none">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('categories.html')"><i class="bi bi-x-lg"></i></button>
+  <div class="topbar-title" id="formTitleMobile">New Expense Category</div>
+  <button class="icon-btn ripple-surface delete-cat-btn d-none" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete category"><i class="bi bi-trash3" style="color:var(--accent-coral);"></i></button>
+</header>
+
+<div class="container-app d-none d-lg-flex align-items-center gap-3 py-4">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('categories.html')"><i class="bi bi-x-lg"></i></button>
+  <h1 class="page-heading mb-0" id="formTitleDesktop">New Expense Category</h1>
+  <button class="icon-btn ripple-surface delete-cat-btn d-none ms-auto" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete category"><i class="bi bi-trash3" style="color:var(--accent-coral);"></i></button>
+</div>
+
+<main style="max-width:560px;margin:0 auto;" class="container-app pb-5 page-enter">
+
+  <form id="catForm" novalidate>
+
+    <div class="surface-card text-center py-4 mb-4">
+      <div class="icon-chip-lg mx-auto mb-3" id="previewIcon" style="width:64px;height:64px;font-size:1.7rem;background:rgba(42,120,214,.14);color:var(--chart-1-blue);"><i class="bi bi-tag-fill"></i></div>
+      <div class="text-secondary" style="font-size:.8rem;">Live preview</div>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label">Category name</label>
+      <input type="text" name="name" id="nameInput" class="form-control" placeholder="e.g. Groceries" maxlength="60" required>
+    </div>
+
+    <label class="form-label px-1">Choose an icon</label>
+    <div class="d-flex flex-wrap gap-2 mb-4" id="iconPicker">
+      <div class="icon-pick selected" data-icon="bi-tag-fill"><i class="bi bi-tag-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-cart-fill"><i class="bi bi-cart-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-cup-hot-fill"><i class="bi bi-cup-hot-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-car-front-fill"><i class="bi bi-car-front-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-airplane-fill"><i class="bi bi-airplane-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-house-door-fill"><i class="bi bi-house-door-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-heart-pulse-fill"><i class="bi bi-heart-pulse-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-mortarboard-fill"><i class="bi bi-mortarboard-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-controller"><i class="bi bi-controller"></i></div>
+      <div class="icon-pick" data-icon="bi-gift-fill"><i class="bi bi-gift-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-piggy-bank-fill"><i class="bi bi-piggy-bank-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-briefcase-fill"><i class="bi bi-briefcase-fill"></i></div>
+      <div class="icon-pick" data-icon="bi-graph-up-arrow"><i class="bi bi-graph-up-arrow"></i></div>
+      <div class="icon-pick" data-icon="bi-three-dots"><i class="bi bi-three-dots"></i></div>
+    </div>
+
+    <label class="form-label px-1">Choose a color</label>
+    <div class="d-flex flex-wrap gap-2 mb-4" id="colorPicker">
+      <div class="swatch selected" style="background:var(--chart-1-blue);" data-color="var(--chart-1-blue)"><i class="bi bi-check-lg"></i></div>
+      <div class="swatch" style="background:var(--chart-2-orange);" data-color="var(--chart-2-orange)"></div>
+      <div class="swatch" style="background:var(--chart-3-aqua);" data-color="var(--chart-3-aqua)"></div>
+      <div class="swatch" style="background:var(--chart-4-yellow);" data-color="var(--chart-4-yellow)"></div>
+      <div class="swatch" style="background:var(--chart-5-magenta);" data-color="var(--chart-5-magenta)"></div>
+      <div class="swatch" style="background:var(--chart-6-green);" data-color="var(--chart-6-green)"></div>
+      <div class="swatch" style="background:var(--chart-7-violet);" data-color="var(--chart-7-violet)"></div>
+      <div class="swatch" style="background:var(--chart-8-red);" data-color="var(--chart-8-red)"></div>
+    </div>
+
+    <div class="surface-card mb-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="fw-700" style="font-size:.88rem;">Active</div>
+          <div class="text-secondary" style="font-size:.74rem;" id="activeHint">Show this category when adding expenses</div>
+        </div>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" type="checkbox" id="activeToggle" checked style="cursor:pointer;">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface mb-2" id="saveBtn">Save Category</button>
+    <button type="button" class="btn btn-outline-soft btn-lg w-100 ripple-surface" onclick="MET.goBack('categories.html')">Cancel</button>
+  </form>
+</main>
+
+<!-- Delete confirmation -->
+<div class="modal sheet-mobile fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-800 mb-2">Delete this category?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;">This action cannot be undone. Categories still used by any transaction or recurring rule can't be deleted — deactivate them instead.</p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" id="confirmDeleteBtn" style="background:var(--accent-coral);border:0;">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script src="assets/js/category-form-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

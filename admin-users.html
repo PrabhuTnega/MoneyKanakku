@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Manage Users — MoneyKanakku Admin</title>
+<meta name="theme-color" content="#181828">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark" style="background:linear-gradient(135deg,#181828,#4634b0);"><i class="bi bi-shield-lock-fill"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Admin Console</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Administration</div>
+      <a href="admin-dashboard.html" class="side-link" data-nav-page="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span class="nav-label">Overview</span></a>
+      <a href="admin-users.html" class="side-link" data-nav-page="admin-users.html"><i class="bi bi-people-fill"></i><span class="nav-label">Users</span></a>
+      <a href="admin-categories.html" class="side-link" data-nav-page="admin-categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="admin-categories.html#system" class="side-link" data-nav-page=""><i class="bi bi-sliders"></i><span class="nav-label">System Config</span></a>
+      <a href="admin-live-ops.html" class="side-link" data-nav-page="admin-live-ops.html"><i class="bi bi-activity"></i><span class="nav-label">Live Ops</span></a>
+      <a href="admin-audit-logs.html" class="side-link" data-nav-page="admin-audit-logs.html"><i class="bi bi-clock-history"></i><span class="nav-label">Audit Logs</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="dashboard.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Back to App</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">A</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Admin User</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">admin@expensio.app</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <a href="admin-dashboard.html" class="icon-btn ripple-surface"><i class="bi bi-arrow-left"></i></a>
+      <div class="topbar-title">Users</div>
+      <span></span>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Manage Users</h1>
+      <div class="search-box"><i class="bi bi-search text-muted-c"></i><input type="text" id="userSearch" placeholder="Search users by name or email..."></div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-people-fill"></i></div><div class="stat-value" id="statTotalUsers">—</div><div class="stat-label">Total users</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-person-check-fill"></i></div><div class="stat-value" id="statActive">—</div><div class="stat-label">Active</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-person-x-fill"></i></div><div class="stat-value" id="statInactive">—</div><div class="stat-label">Inactive</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-amber"><i class="bi bi-shield-fill"></i></div><div class="stat-value" id="statAdmins">—</div><div class="stat-label">Admins</div></div></div>
+      </div>
+
+      <div class="chip-scroll mb-3" data-chip-group id="statusFilter">
+        <button class="filter-chip active" data-status="all">All Users</button>
+        <button class="filter-chip" data-status="active">Active</button>
+        <button class="filter-chip" data-status="inactive">Inactive</button>
+        <button class="filter-chip" data-status="admin">Admins</button>
+      </div>
+
+      <div class="surface-card">
+        <div class="table-responsive">
+          <table class="table table-modern mb-0">
+            <thead><tr><th>User</th><th>Email</th><th>Mobile</th><th>Role</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+            <tbody id="usersTableBody"><tr><td colspan="7"><div class="section-loading" style="min-height:100px;"></div></td></tr></tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3" style="border-top:1px solid var(--border-color);">
+          <span class="text-secondary" style="font-size:.8rem;" id="usersShowingLine">—</span>
+          <div class="d-flex gap-2">
+            <button class="icon-btn ripple-surface" id="usersPrevPage"><i class="bi bi-chevron-left"></i></button>
+            <button class="icon-btn ripple-surface" id="usersNextPage"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Invite-user modal — commented out for now: there's no admin
+"create/invite user" endpoint on the backend yet (deliberately — it needs
+real product decisions first: does the admin set an initial password or
+does the invitee, and how is it delivered without an email provider
+wired up?). Re-enable once that's designed and built.
+<div class="modal sheet-mobile fade" id="inviteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-800 mb-0">Invite New User</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form onsubmit="event.preventDefault(); MET.toast('Invitation sent'); document.getElementById('inviteModal').querySelector('.btn-close').click();">
+        <div class="mb-3"><label class="form-label">Email address</label><input type="email" class="form-control" placeholder="user@example.com" required></div>
+        <div class="mb-4"><label class="form-label">Role</label><select class="form-select"><option>User</option><option>Admin</option></select></div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface">Send Invitation</button>
+      </form>
+    </div>
+  </div>
+</div>
+-->
+
+<!-- Suspend/reactivate + role-change confirmation -->
+<div class="modal sheet-mobile fade" id="confirmActionModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3" id="confirmActionIcon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-800 mb-2" id="confirmActionTitle">Are you sure?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;" id="confirmActionBody"></p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" style="background:var(--accent-coral);border:0;" id="confirmActionBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/admin-users-data.js"></script>
+<script>
+  MET.guardAuth('admin');
+</script>
+</body>
+</html>

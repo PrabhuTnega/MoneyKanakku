@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Settings — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link active" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <button class="icon-btn ripple-surface" onclick="MET.goBack('profile.html')"><i class="bi bi-arrow-left"></i></button>
+      <div class="topbar-title">Settings</div>
+      <span></span>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Settings</h1>
+    </header>
+
+    <div class="container-app py-3 py-lg-4" style="max-width:760px;">
+
+      <div class="section-title-row"><h6>Personal Information</h6></div>
+      <div class="surface-card mb-4">
+        <form id="personalInfoForm" novalidate>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label">Full name</label>
+              <input type="text" name="name" id="nameInput" class="form-control" maxlength="120" required>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Email address</label>
+              <input type="email" id="emailInput" class="form-control" disabled>
+              <div class="form-text">Email can't be changed here yet — it doubles as your sign-in ID.</div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Mobile number <span class="text-muted-c fw-400">(optional)</span></label>
+              <input type="tel" name="phone" id="phoneInput" class="form-control" placeholder="+91 98765 43210">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary ripple-surface mt-3" id="savePersonalBtn">Save Changes</button>
+        </form>
+      </div>
+
+      <div class="section-title-row"><h6>Preferences</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <div class="d-flex align-items-center txn-item">
+          <div class="icon-chip chip-teal"><i class="bi bi-currency-rupee"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Currency</div><div class="txn-meta">Amounts shown across the app</div></div>
+          <select class="form-select" id="currencySelect" style="width:auto;">
+            <option value="INR">₹ INR</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="GBP">£ GBP</option>
+          </select>
+        </div>
+        <hr class="divider list-divider">
+        <div class="d-flex align-items-center txn-item">
+          <div class="icon-chip chip-blue"><i class="bi bi-globe"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Language</div></div>
+          <select class="form-select" style="width:auto;" disabled title="Coming soon">
+            <option>English</option><option>हिन्दी</option><option>தமிழ்</option>
+          </select>
+        </div>
+        <hr class="divider list-divider">
+        <div class="d-flex align-items-center txn-item">
+          <div class="icon-chip" style="background:var(--surface-soft);color:var(--text-secondary);"><i class="bi bi-calendar-week"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Week starts on</div></div>
+          <select class="form-select" style="width:auto;" disabled title="Coming soon">
+            <option>Monday</option><option>Sunday</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title-row"><h6>Appearance</h6></div>
+      <div class="surface-card mb-4">
+        <div class="row row-cols-3 g-3">
+          <div class="col">
+            <label class="d-block text-center ripple-surface p-3 rounded-xl" style="border:2px solid var(--brand-500);cursor:pointer;">
+              <input type="radio" name="theme" class="d-none" checked>
+              <div class="rounded-xl mb-2" style="height:56px;background:#f5f6fb;border:1px solid var(--border-color);"></div>
+              <span class="fw-700" style="font-size:.8rem;">Light</span>
+            </label>
+          </div>
+          <div class="col">
+            <label class="d-block text-center ripple-surface p-3 rounded-xl" style="border:2px solid transparent;cursor:pointer;">
+              <input type="radio" name="theme" class="d-none">
+              <div class="rounded-xl mb-2" style="height:56px;background:#161829;border:1px solid var(--border-color);"></div>
+              <span class="fw-700" style="font-size:.8rem;">Dark</span>
+            </label>
+          </div>
+          <div class="col">
+            <label class="d-block text-center ripple-surface p-3 rounded-xl" style="border:2px solid transparent;cursor:pointer;">
+              <input type="radio" name="theme" class="d-none">
+              <div class="rounded-xl mb-2" style="height:56px;background:linear-gradient(90deg,#f5f6fb 50%,#161829 50%);border:1px solid var(--border-color);"></div>
+              <span class="fw-700" style="font-size:.8rem;">System</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title-row"><h6>Notifications</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <p class="text-secondary px-2" style="font-size:.78rem;">Per-preference notification controls aren't wired up yet — there's no per-user settings storage for these on the backend yet, so these are shown for reference only.</p>
+        <div class="d-flex align-items-center justify-content-between txn-item">
+          <div><div class="fw-700" style="font-size:.88rem;">Budget alerts</div><div class="text-secondary" style="font-size:.74rem;">Notify when nearing or exceeding budget</div></div>
+          <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked disabled style="cursor:not-allowed;"></div>
+        </div>
+        <hr class="divider list-divider">
+        <div class="d-flex align-items-center justify-content-between txn-item">
+          <div><div class="fw-700" style="font-size:.88rem;">Recurring reminders</div><div class="text-secondary" style="font-size:.74rem;">Remind before recurring expenses are due</div></div>
+          <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked disabled style="cursor:not-allowed;"></div>
+        </div>
+        <hr class="divider list-divider">
+        <div class="d-flex align-items-center justify-content-between txn-item">
+          <div><div class="fw-700" style="font-size:.88rem;">Weekly summary email</div><div class="text-secondary" style="font-size:.74rem;">A digest of your spending every Monday</div></div>
+          <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" disabled style="cursor:not-allowed;"></div>
+        </div>
+        <hr class="divider list-divider">
+        <div class="d-flex align-items-center justify-content-between txn-item">
+          <div><div class="fw-700" style="font-size:.88rem;">Push notifications</div><div class="text-secondary" style="font-size:.74rem;">Enable notifications on this device</div></div>
+          <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked disabled style="cursor:not-allowed;"></div>
+        </div>
+      </div>
+
+      <div class="section-title-row"><h6>Security</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <a href="change-password.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-blue"><i class="bi bi-key-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Change Password</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+      </div>
+
+      <div class="section-title-row"><h6>Data & Backup</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <a href="reports.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-amber"><i class="bi bi-download"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Export All Data</div><div class="txn-meta">CSV, Excel or PDF</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <button class="d-flex align-items-center txn-item text-decoration-none w-100 border-0 bg-transparent text-start" style="color:var(--accent-coral);" data-bs-toggle="modal" data-bs-target="#clearDataModal">
+          <div class="icon-chip chip-coral"><i class="bi bi-trash-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--accent-coral);">Clear All Data</div><div class="txn-meta">Permanently delete all expenses</div></div>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap"><a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a></div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+</div>
+
+<div class="modal sheet-mobile fade" id="clearDataModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-800 mb-2">Clear all data?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;">This will permanently delete all your transactions, budgets, recurring rules, notifications, and custom categories. This action cannot be undone.</p>
+      <div class="mb-3 text-start">
+        <label class="form-label">Enter your password to confirm</label>
+        <input type="password" class="form-control" id="clearDataPassword" autocomplete="current-password">
+        <div class="invalid-feedback" id="clearDataError"></div>
+      </div>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" id="confirmClearDataBtn" style="background:var(--accent-coral);border:0;">Delete Everything</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script src="assets/js/settings-data.js"></script>
+<script>
+  MET.guardAuth('protected').then(function(user){
+    if(user) MET.initSettingsForm(user);
+  });
+  (function(){
+    const $radios = document.querySelectorAll('input[name="theme"]');
+    // Reflect whatever's actually saved (app.js's initTheme applies this same
+    // value on every page load) — not the hardcoded "Light" the markup ships
+    // with. No saved key, same as app.js, means "auto"/System.
+    const savedTheme = localStorage.getItem('met_theme') || 'auto';
+    const savedIdx = savedTheme === 'light' ? 0 : (savedTheme === 'dark' ? 1 : 2);
+    $radios.forEach(function(radio, idx){
+      radio.checked = idx === savedIdx;
+      radio.closest('label').style.borderColor = idx === savedIdx ? 'var(--brand-500)' : 'transparent';
+    });
+
+    $radios.forEach(function(radio, idx){
+      radio.addEventListener('change', function(){
+        $radios.forEach(function(r){ r.closest('label').style.borderColor = 'transparent'; });
+        this.closest('label').style.borderColor = 'var(--brand-500)';
+        const mode = idx === 0 ? 'light' : (idx === 1 ? 'dark' : 'auto');
+        localStorage.setItem('met_theme', mode);
+        if(mode === 'auto'){ document.documentElement.removeAttribute('data-theme'); }
+        else { document.documentElement.setAttribute('data-theme', mode); }
+      });
+    });
+  })();
+</script>
+</body>
+</html>

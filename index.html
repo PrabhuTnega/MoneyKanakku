@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Monthly Expense Tracker</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none">
+
+<div class="splash-wrap">
+  <div class="splash-logo"><i class="bi bi-currency-rupee"></i></div>
+  <div class="text-center mt-4">
+    <h1 class="font-display fw-800 mb-1" style="font-size:1.6rem;">MoneyKanakku</h1>
+    <p class="mb-0" style="opacity:.85;font-size:.85rem;">Every Rupee. Accounted For.</p>
+  </div>
+  <div class="splash-bar"><span></span></div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/api.js"></script>
+<script>
+  // Native splash boot: check for a live session first, then fall back to
+  // first-run onboarding vs. login.
+  setTimeout(function(){
+    MET.api.get('/auth/me').then(function(resp){
+      if(resp.user){ window.location.href = 'dashboard.html'; return; }
+      var seen = localStorage.getItem('met_onboarded');
+      window.location.href = seen ? 'login.html' : 'onboarding.html';
+    }, function(){
+      var seen = localStorage.getItem('met_onboarded');
+      window.location.href = seen ? 'login.html' : 'onboarding.html';
+    });
+  }, 1400);
+</script>
+</body>
+</html>

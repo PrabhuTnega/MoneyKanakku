@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Search — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<header class="mobile-topbar d-lg-none" style="gap:8px;">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+  <div class="search-box flex-fill" style="background:var(--surface-soft);border-radius:999px;display:flex;align-items:center;gap:8px;padding:9px 16px;">
+    <i class="bi bi-search text-muted-c"></i>
+    <input type="text" id="searchInput" class="border-0 bg-transparent flex-fill" style="outline:0;color:var(--text-primary);font-size:.9rem;" placeholder="Search expenses, categories..." autofocus>
+  </div>
+</header>
+
+<div class="container-app d-none d-lg-flex align-items-center gap-3 py-4">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+  <div class="search-box flex-fill" style="max-width:600px;">
+    <i class="bi bi-search text-muted-c"></i>
+    <input type="text" id="searchInputDesktop" style="border:0;background:transparent;outline:0;width:100%;color:var(--text-primary);" placeholder="Search expenses, categories, notes...">
+  </div>
+</div>
+
+<main class="container-app pb-5 page-enter" style="max-width:700px;margin:0 auto;">
+
+  <div id="recentSection">
+    <div class="section-title-row mt-2">
+      <h6>Recent searches</h6>
+      <a href="#" id="clearRecentSearches">Clear</a>
+    </div>
+    <div class="chip-scroll mb-4" id="recentChips">
+      <button class="filter-chip">Swiggy</button>
+      <button class="filter-chip">Uber</button>
+      <button class="filter-chip">Netflix</button>
+      <button class="filter-chip">Electricity</button>
+    </div>
+
+    <div class="section-title-row"><h6>Browse by category</h6></div>
+    <div class="row row-cols-4 g-2 mb-4" id="browseCategories"></div>
+  </div>
+
+  <div id="resultsSection" class="d-none">
+    <div class="section-title-row"><h6>Results</h6><span class="text-secondary" style="font-size:.8rem;" id="resultsCount">—</span></div>
+    <div class="surface-card p-2 p-lg-3" id="resultsList"></div>
+  </div>
+
+  <div id="emptySection" class="d-none">
+    <div class="empty-state">
+      <div class="icon-chip-lg chip-violet mx-auto mb-3" style="width:80px;height:80px;font-size:2rem;"><i class="bi bi-search"></i></div>
+      <h6>No results found</h6>
+      <p>We couldn't find any expenses matching your search. Try a different keyword.</p>
+    </div>
+  </div>
+
+</main>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/search-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

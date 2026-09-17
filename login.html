@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Sign In — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="auth-wrap">
+  <div class="row g-0 flex-grow-1">
+
+    <!-- Desktop-only brand visual panel -->
+    <div class="col-12 col-lg-6 auth-visual d-none d-lg-flex flex-column justify-content-between p-5" style="position:relative;">
+      <div class="d-flex align-items-center gap-2" style="position:relative;z-index:1;">
+        <div class="splash-logo" style="width:44px;height:44px;border-radius:14px;font-size:1.3rem;"><i class="bi bi-currency-rupee"></i></div>
+        <span class="font-display fw-800 fs-5">MoneyKanakku</span>
+      </div>
+      <div style="position:relative;z-index:1;max-width:420px;">
+        <h2 class="font-display fw-800 text-white mb-3" style="font-size:2.1rem;">Take full control of your monthly finances.</h2>
+        <p style="opacity:.85;">Track spending, manage budgets and get clear insights — all in one premium dashboard built for real financial clarity.</p>
+        <div class="d-flex gap-4 mt-4">
+          <div><div class="fw-800 fs-4 font-display">50K+</div><div style="opacity:.8;font-size:.78rem;">Active users</div></div>
+          <div><div class="fw-800 fs-4 font-display">4.9★</div><div style="opacity:.8;font-size:.78rem;">Store rating</div></div>
+          <div><div class="fw-800 fs-4 font-display">₹2Cr+</div><div style="opacity:.8;font-size:.78rem;">Tracked monthly</div></div>
+        </div>
+      </div>
+      <div style="position:relative;z-index:1;opacity:.8;font-size:.78rem;">© 2026 MoneyKanakku Inc. All rights reserved.</div>
+    </div>
+
+    <!-- Form panel -->
+    <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center">
+      <div class="w-100 page-enter" style="max-width:420px; padding: calc(28px + var(--safe-top)) 26px 28px;">
+
+        <div class="d-flex d-lg-none align-items-center gap-2 mb-5">
+          <div class="icon-chip chip-violet"><i class="bi bi-currency-rupee"></i></div>
+          <span class="font-display fw-800 fs-5">MoneyKanakku</span>
+        </div>
+
+        <h2 class="font-display fw-800 mb-1">Welcome back 👋</h2>
+        <p class="text-secondary mb-4">Sign in to continue managing your expenses.</p>
+
+        <form id="loginForm" novalidate>
+          <div class="mb-3">
+            <label class="form-label">Email address</label>
+            <div class="input-icon-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Password</label>
+            <div class="input-icon-group position-relative">
+              <i class="bi bi-lock"></i>
+              <input type="password" id="loginPw" name="password" class="form-control" style="padding-right:44px;" placeholder="••••••••" required>
+              <button type="button" class="btn p-0 position-absolute" style="right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);" data-toggle-password="loginPw"><i class="bi bi-eye"></i></button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="remember" style="width:1.1em;height:1.1em;">
+              <label class="form-check-label text-secondary" style="font-size:.82rem;" for="remember">Remember me</label>
+            </div>
+            <a href="forgot-password.html" class="fw-700" style="font-size:.82rem;color:var(--brand-500);">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface" id="loginBtn">Sign In</button>
+        </form>
+
+        <p class="text-center text-secondary mt-4 mb-0" style="font-size:.86rem;">
+          Don't have an account? <a href="register.html" class="fw-700" style="color:var(--brand-500);">Create one</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script>
+  MET.guardAuth('public');
+
+  $('#loginForm').on('submit', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    if(!MET.validateForm($form)) return;
+
+    const $btn = $('#loginBtn');
+    MET.showButtonLoading($btn, 'Signing in…');
+    MET.api.post('/auth/login', {
+      email: $form.find('[name=email]').val().trim(),
+      password: $form.find('[name=password]').val()
+    }).then(function(resp){
+      MET.toastSuccess('Welcome back!');
+      setTimeout(function(){ window.location.href = MET.homePageFor(resp.user); }, 500);
+    }, function(err){
+      MET.hideButtonLoading($btn);
+      if(err.fieldErrors){ MET.applyServerFieldErrors($form, err.fieldErrors); }
+      else { MET.showFormError($form, err.message); }
+      if(err.status !== 422) MET.toastError(err.message);
+    });
+  });
+</script>
+</body>
+</html>

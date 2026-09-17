@@ -1,0 +1,510 @@
+// =====================================================================
+// Monthly Expense Tracker — Prisma Schema
+// PostgreSQL 17 · Prisma ORM 7
+//
+// v2 (2026-09-11): the UI grew Income tracking alongside Expense, plus two
+// admin ops pages (Audit Logs, Live Ops). This schema now reflects that:
+//   - Expense -> Transaction (+ TransactionType EXPENSE|INCOME)
+//   - RecurringExpense -> RecurringTransaction (+ TransactionType)
+//   - ExpenseAttachment -> TransactionAttachment
+//   - Category gained `transactionType` to scope it to Expense or Income
+//   - New: PushDevice (backs the existing "push notifications" toggle)
+//   - New: RequestLog (backs Live Ops' hottest/slowest endpoint tables)
+//
+// Design notes (see db/README.md for the full ERD + rationale):
+//  - Money is always Decimal(12,2), never Float.
+//  - Transactions and RecurringTransactions are soft-deleted (deletedAt) to
+//    satisfy the FRS audit-integrity rule; budget math always filters
+//    deletedAt=null AND type=EXPENSE.
+//  - Budgets stay expense-only by product decision — Budget.categoryId
+//    should only ever reference a Category with transactionType=EXPENSE.
+//    Postgres can't enforce a cross-table CHECK without a trigger, so this
+//    is an application-layer invariant, documented here deliberately rather
+//    than silently assumed.
+//  - A handful of constraints Prisma's schema language can't express yet
+//    (CHECK amount > 0, partial UNIQUE indexes) are added by hand in a
+//    follow-up migration — see prisma/migrations/*_manual_constraints*.
+//  - Every DateTime that represents an absolute instant (createdAt,
+//    expiresAt, transactionDate, ...) is explicitly `@db.Timestamptz`.
+//    This was NOT cosmetic: Prisma's default DateTime->`timestamp without
+//    time zone` combined with this server's session timezone
+//    (Asia/Calcutta) was verified to silently corrupt every "now() -
+//    interval" query — request_logs seeded with JS `Date.now()` landed
+//    ~5-6 hours away from what `now()` reported, so `WHERE created_at >
+//    now() - interval '1 hour'` matched zero rows despite fresh data
+//    existing. `timestamptz` stores a true UTC instant and sidesteps the
+//    whole class of bug regardless of session timezone. Pure calendar
+//    dates with no time-of-day meaning (Budget.monthYear, and
+//    RecurringTransaction's startDate/endDate/nextDueDate) correctly stay
+//    plain `@db.Date` instead — a recurrence rule "due on the 14th" has no
+//    time-of-day or timezone component to get wrong in the first place.
+// =====================================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ThemePreference {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum WeekStart {
+  MONDAY
+  SUNDAY
+}
+
+enum CategoryType {
+  DEFAULT // system-wide category, managed by Admin, visible to every user
+  CUSTOM // created by an individual user
+}
+
+/// Every category, transaction and recurring rule is scoped to exactly one
+/// of these — matches the Expense/Income segmented toggle used throughout
+/// the UI (expense-form.html, categories.html, admin-categories.html, ...).
+enum TransactionType {
+  EXPENSE
+  INCOME
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  CASH
+  NETBANKING
+  WALLET
+  OTHER
+}
+
+enum RecurrenceFrequency {
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum NotificationType {
+  BUDGET_ALERT
+  RECURRING_REMINDER
+  INCOME_RECEIVED
+  REPORT_READY
+  SECURITY
+  SYSTEM
+}
+
+/// LOGIN_2FA was deliberately never added here: the UI never shipped a
+/// two-factor toggle (removed from settings.html during UI review), so
+/// there is no flow that would ever create an OtpToken with that purpose.
+enum OtpPurpose {
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  LOGIN
+  LOGOUT
+  LOGIN_FAILED
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+// ---------------------------------------------------------------------
+// Users & Auth
+// ---------------------------------------------------------------------
+
+model User {
+  id           String  @id @default(uuid())
+  name         String  @db.VarChar(120)
+  /// Always stored lowercased by the application layer for
+  /// case-insensitive login without needing the citext extension.
+  email        String  @unique @db.VarChar(255)
+  phone        String? @unique @db.VarChar(20)
+  passwordHash String  @map("password_hash")
+  avatarUrl    String? @map("avatar_url")
+  role         Role    @default(USER)
+
+  // Preferences (kept on User: always exist 1:1, no need for a side table)
+  currency  String          @default("INR") @db.VarChar(3)
+  timezone  String          @default("Asia/Kolkata") @db.VarChar(64)
+  language  String          @default("en") @db.VarChar(10)
+  weekStart WeekStart       @default(MONDAY) @map("week_start")
+  theme     ThemePreference @default(SYSTEM)
+
+  // Notification toggles (settings.html)
+  notifyBudgetAlerts       Boolean @default(true) @map("notify_budget_alerts")
+  notifyRecurringReminders Boolean @default(true) @map("notify_recurring_reminders")
+  notifyWeeklySummaryEmail Boolean @default(false) @map("notify_weekly_summary_email")
+  notifyPushEnabled        Boolean @default(true) @map("notify_push_enabled")
+
+  isActive        Boolean   @default(true) @map("is_active")
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz
+  lastLoginAt     DateTime? @map("last_login_at") @db.Timestamptz
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+
+  sessions              Session[]
+  otpTokens             OtpToken[]
+  pushDevices           PushDevice[]
+  categories            Category[]
+  transactions          Transaction[]
+  recurringTransactions RecurringTransaction[]
+  budgets               Budget[]
+  notifications         Notification[]
+  auditLogs             AuditLog[]
+
+  @@index([isActive])
+  @@map("users")
+}
+
+/// Server-side session store — FRS specifies session-based authentication
+/// (not JWT). Only a hash of the session token is ever stored.
+/// Doubles as the source of truth for Live Ops' "Online Users" (distinct
+/// userId where lastActiveAt is recent) and "Active Sessions" (count where
+/// expiresAt > now()) — see db/queries/live_ops.sql.
+model Session {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  tokenHash    String   @unique @map("token_hash")
+  userAgent    String?  @map("user_agent")
+  ipAddress    String?  @map("ip_address") @db.VarChar(45)
+  expiresAt    DateTime @map("expires_at") @db.Timestamptz
+  lastActiveAt DateTime @default(now()) @map("last_active_at") @db.Timestamptz
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([lastActiveAt])
+  @@map("sessions")
+}
+
+/// One-time codes for password reset / email verification / optional 2FA.
+/// Backs forgot-password.html → otp-verify.html → reset-password.html.
+model OtpToken {
+  id         String     @id @default(uuid())
+  userId     String     @map("user_id")
+  purpose    OtpPurpose
+  otpHash    String     @map("otp_hash")
+  expiresAt  DateTime   @map("expires_at") @db.Timestamptz
+  consumedAt DateTime?  @map("consumed_at") @db.Timestamptz
+  attempts   Int        @default(0)
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+  @@map("otp_tokens")
+}
+
+/// A device registered to receive push notifications — required for the
+/// "Push notifications" toggle on settings.html to ever deliver anything.
+model PushDevice {
+  id         String         @id @default(uuid())
+  userId     String         @map("user_id")
+  platform   DevicePlatform
+  pushToken  String         @unique @map("push_token")
+  lastSeenAt DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz
+  createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_devices")
+}
+
+// ---------------------------------------------------------------------
+// Categories
+// ---------------------------------------------------------------------
+
+/// userId = null  →  a global/default category managed by Admin
+///                    (admin-categories.html) and visible to every user.
+/// userId = <id>  →  a custom category owned by that user
+///                    (categories.html → category-form.html).
+/// transactionType scopes the category to the Expense or Income tab —
+/// e.g. "Food" (EXPENSE) vs "Salary" (INCOME) are never interchangeable.
+model Category {
+  id              String          @id @default(uuid())
+  userId          String?         @map("user_id")
+  name            String          @db.VarChar(60)
+  icon            String          @default("bi-tag-fill") @db.VarChar(40)
+  // VarChar(40), matching `icon` above and categories.validation.ts's
+  // colorSchema max length — was VarChar(20) until a real bug surfaced:
+  // several of the picker's own CSS-var swatches (e.g. "var(--chart-5-
+  // magenta)", 23 chars) exceeded that, so picking most colors failed at
+  // the DATABASE layer with a raw Postgres "value too long" error, past
+  // Zod validation (which already allowed up to 40) ever seeing it.
+  color           String          @default("#2a78d6") @db.VarChar(40)
+  type            CategoryType    @default(CUSTOM)
+  transactionType TransactionType @default(EXPENSE) @map("transaction_type")
+  isActive        Boolean         @default(true) @map("is_active")
+  sortOrder       Int             @default(0) @map("sort_order")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user                  User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions          Transaction[]
+  recurringTransactions RecurringTransaction[]
+  budgets               Budget[]
+
+  // Per-user category names must be unique within a type; global
+  // (userId IS NULL) names must also be unique within a type — the second
+  // half is a partial index added by hand (see manual_constraints
+  // migration) since Postgres treats NULLs as distinct in a normal UNIQUE.
+  @@unique([userId, name, transactionType])
+  @@index([userId, transactionType, isActive])
+  @@map("categories")
+}
+
+// ---------------------------------------------------------------------
+// Transactions (Expense or Income)
+// ---------------------------------------------------------------------
+
+model Transaction {
+  id                     String          @id @default(uuid())
+  userId                 String          @map("user_id")
+  categoryId             String          @map("category_id")
+  type                   TransactionType @default(EXPENSE)
+  paymentMethod          PaymentMethod   @default(UPI) @map("payment_method")
+  amount                 Decimal         @db.Decimal(12, 2)
+  currency               String          @default("INR") @db.VarChar(3)
+  transactionDate        DateTime        @map("transaction_date") @db.Timestamptz
+  description            String?         @db.VarChar(500)
+  isRecurring            Boolean         @default(false) @map("is_recurring")
+  recurringTransactionId String?         @map("recurring_transaction_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  /// Soft delete — required so historical audit trail / reports for prior
+  /// months stay accurate even after a user deletes a transaction.
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+
+  user                 User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category             Category                @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  recurringTransaction RecurringTransaction?   @relation(fields: [recurringTransactionId], references: [id], onDelete: SetNull)
+  attachments          TransactionAttachment[]
+
+  // Primary access pattern across dashboard/transactions/reports: a user's
+  // transactions of a given type for a date range, newest first (the
+  // Income/Expense toggle used everywhere in the UI).
+  @@index([userId, type, transactionDate(sort: Desc)])
+  // Category-wise breakdown / reports.
+  @@index([userId, categoryId])
+  // Payment-method report tab.
+  @@index([userId, paymentMethod])
+  @@index([recurringTransactionId])
+  // Backs search.html's substring/typo-tolerant transaction search
+  // (`ILIKE '%term%'`, which a plain B-tree can't accelerate) — a
+  // trigram GIN index, originally added by hand in the
+  // 20260911175000_search_indexes migration since Prisma's schema
+  // language couldn't express it at the time. Declared here now (Prisma's
+  // extended-indexes support covers `type: Gin` + raw ops) specifically so
+  // `prisma migrate dev`'s auto-diffing recognizes it as intentional and
+  // stops proposing to drop it — which is exactly what happened once,
+  // unnoticed, as a side effect of an unrelated column-width migration.
+  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin, map: "transactions_description_trgm_idx")
+  @@map("transactions")
+}
+
+model TransactionAttachment {
+  id            String   @id @default(uuid())
+  transactionId String   @map("transaction_id")
+  fileUrl       String   @map("file_url")
+  fileType      String   @map("file_type") @db.VarChar(30)
+  fileSizeBytes Int      @map("file_size_bytes")
+  uploadedAt    DateTime @default(now()) @map("uploaded_at") @db.Timestamptz
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+  @@map("transaction_attachments")
+}
+
+// ---------------------------------------------------------------------
+// Recurring Transactions (recurring Expense or recurring Income, e.g. Salary)
+// ---------------------------------------------------------------------
+
+model RecurringTransaction {
+  id               String              @id @default(uuid())
+  userId           String              @map("user_id")
+  categoryId       String              @map("category_id")
+  type             TransactionType     @default(EXPENSE)
+  paymentMethod    PaymentMethod       @default(UPI) @map("payment_method")
+  title            String              @db.VarChar(120)
+  amount           Decimal             @db.Decimal(12, 2)
+  frequency        RecurrenceFrequency @default(MONTHLY)
+  startDate        DateTime            @map("start_date") @db.Date
+  endDate          DateTime?           @map("end_date") @db.Date
+  /// Next date the scheduler should generate a Transaction row for.
+  nextDueDate      DateTime            @map("next_due_date") @db.Date
+  autoGenerate     Boolean             @default(true) @map("auto_generate")
+  /// recurring-form.html's "Remind me N days before" is a single on/off
+  /// switch, not a days input — remindersEnabled is what that toggle
+  /// writes to; remindBeforeDays is the (currently not user-editable in
+  /// the UI) lead time it uses once enabled. Kept as two fields instead of
+  /// overloading remindBeforeDays=0 as "disabled", which would have been
+  /// ambiguous with a genuine same-day reminder.
+  remindersEnabled Boolean             @default(true) @map("reminders_enabled")
+  remindBeforeDays Int                 @default(1) @map("remind_before_days")
+  isPaused         Boolean             @default(false) @map("is_paused")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  transactions Transaction[]
+
+  // The due-date scheduler scans "give me everything due today that isn't
+  // paused/deleted" — this index makes that a pure index scan.
+  @@index([nextDueDate, isPaused])
+  @@index([userId, type, isPaused])
+  @@map("recurring_transactions")
+}
+
+// ---------------------------------------------------------------------
+// Budgets — expense-only by product decision (see schema header note)
+// ---------------------------------------------------------------------
+
+model Budget {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  /// null = the overall monthly budget; otherwise a per-category budget.
+  /// Must reference a Category with transactionType=EXPENSE — enforced at
+  /// the application layer, see schema header note.
+  categoryId String?  @map("category_id")
+  /// Always the 1st of the month, e.g. 2026-09-01 — represents "Sep 2026".
+  monthYear  DateTime @map("month_year") @db.Date
+  amount     Decimal  @db.Decimal(12, 2)
+
+  alertThresholdPercent Int     @default(80) @map("alert_threshold_percent")
+  repeatMonthly         Boolean @default(true) @map("repeat_monthly")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // One budget per category per month. The "one overall budget per user per
+  // month" rule (categoryId IS NULL) is enforced by a partial unique index
+  // added by hand — see manual_constraints migration.
+  @@unique([userId, categoryId, monthYear])
+  @@index([userId, monthYear])
+  @@map("budgets")
+}
+
+// ---------------------------------------------------------------------
+// Notifications
+// ---------------------------------------------------------------------
+
+model Notification {
+  id                String           @id @default(uuid())
+  userId            String           @map("user_id")
+  type              NotificationType
+  title             String           @db.VarChar(160)
+  message           String           @db.VarChar(500)
+  isRead            Boolean          @default(false) @map("is_read")
+  relatedEntityType String?          @map("related_entity_type") @db.VarChar(40)
+  relatedEntityId   String?          @map("related_entity_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+// ---------------------------------------------------------------------
+// Audit Log — compliance / "who changed what" trail (admin-audit-logs.html)
+// ---------------------------------------------------------------------
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  userId     String?     @map("user_id")
+  action     AuditAction
+  entityType String      @map("entity_type") @db.VarChar(40)
+  entityId   String?     @map("entity_id")
+  oldValues  Json?       @map("old_values")
+  newValues  Json?       @map("new_values")
+  ipAddress  String?     @map("ip_address") @db.VarChar(45)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+// ---------------------------------------------------------------------
+// Request Log — backs admin-live-ops.html's Hottest/Slowest endpoint
+// tables and its API req/min golden signal. Deliberately has NO foreign
+// key on userId (a hard FK would slow down or block writes on the
+// highest-volume table in the whole schema, and would block deleting a
+// user while their request history still exists) — see db/README.md's
+// scaling note on partitioning this table by day once it's under load.
+// ---------------------------------------------------------------------
+
+model RequestLog {
+  id         BigInt   @id @default(autoincrement())
+  method     String   @db.VarChar(10)
+  path       String   @db.VarChar(255)
+  statusCode Int      @map("status_code")
+  durationMs Int      @map("duration_ms")
+  userId     String?  @map("user_id")
+  ipAddress  String?  @map("ip_address") @db.VarChar(45)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Hottest/slowest-endpoint aggregation over a recent time window.
+  @@index([path, createdAt])
+  // Retention pruning ("delete everything older than N days") and any
+  // time-ranged scan across all endpoints.
+  @@index([createdAt])
+  @@index([statusCode])
+  @@map("request_logs")
+}
+
+// ---------------------------------------------------------------------
+// System Configuration — Admin → System Config (admin-categories.html#system)
+// A single flexible key/value table so new settings never need a migration.
+// ---------------------------------------------------------------------
+
+model SystemSetting {
+  key         String   @id @db.VarChar(80)
+  value       Json
+  description String?  @db.VarChar(255)
+  updatedBy   String?  @map("updated_by")
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("system_settings")
+}

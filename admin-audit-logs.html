@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Audit Logs — MoneyKanakku Admin</title>
+<meta name="theme-color" content="#181828">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<style>
+  .diff-box{ background:var(--surface-soft); border-radius:var(--radius-sm); padding:14px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.78rem; white-space:pre-wrap; word-break:break-word; max-height:280px; overflow-y:auto; }
+  .action-dot{ width:8px;height:8px;border-radius:50%;display:inline-block; }
+</style>
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark" style="background:linear-gradient(135deg,#181828,#4634b0);"><i class="bi bi-shield-lock-fill"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Admin Console</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Administration</div>
+      <a href="admin-dashboard.html" class="side-link" data-nav-page="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span class="nav-label">Overview</span></a>
+      <a href="admin-users.html" class="side-link" data-nav-page="admin-users.html"><i class="bi bi-people-fill"></i><span class="nav-label">Users</span></a>
+      <a href="admin-categories.html" class="side-link" data-nav-page="admin-categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="admin-categories.html#system" class="side-link" data-nav-page=""><i class="bi bi-sliders"></i><span class="nav-label">System Config</span></a>
+      <a href="admin-live-ops.html" class="side-link" data-nav-page="admin-live-ops.html"><i class="bi bi-activity"></i><span class="nav-label">Live Ops</span></a>
+      <a href="admin-audit-logs.html" class="side-link active" data-nav-page="admin-audit-logs.html"><i class="bi bi-clock-history"></i><span class="nav-label">Audit Logs</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="dashboard.html" class="side-link"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Back to App</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">A</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Admin User</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">admin@expensio.app</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <a href="admin-dashboard.html" class="icon-btn ripple-surface"><i class="bi bi-arrow-left"></i></a>
+      <div class="topbar-title">Audit Logs</div>
+      <button class="icon-btn ripple-surface" data-bs-toggle="modal" data-bs-target="#filterSheet"><i class="bi bi-sliders"></i></button>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Audit Logs</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <button class="btn btn-outline-soft ripple-surface" onclick="MET.toast('Export not built yet — see api/README.md for what is')"><i class="bi bi-download me-1"></i>Export</button>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-journal-text"></i></div><div class="stat-value" id="statEventsToday">—</div><div class="stat-label">Events today</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-trash-fill"></i></div><div class="stat-value" id="statDeletionsToday">—</div><div class="stat-label">Deletions today</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-amber"><i class="bi bi-shield-exclamation"></i></div><div class="stat-value" id="statFailedLoginsToday">—</div><div class="stat-label">Failed logins today</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-blue"><i class="bi bi-person-badge-fill"></i></div><div class="stat-value" id="statTotalEvents">—</div><div class="stat-label">Total events</div></div></div>
+      </div>
+
+      <!-- Filters (desktop) -->
+      <div class="d-none d-lg-flex align-items-center gap-2 mb-3">
+        <div class="chip-scroll" data-chip-group id="actionFilterDesktop" style="flex:1;">
+          <button class="filter-chip active" data-action="">All Actions</button>
+          <button class="filter-chip" data-action="CREATE">Create</button>
+          <button class="filter-chip" data-action="UPDATE">Update</button>
+          <button class="filter-chip" data-action="DELETE">Delete</button>
+          <button class="filter-chip" data-action="LOGIN">Login</button>
+          <button class="filter-chip" data-action="LOGOUT">Logout</button>
+          <button class="filter-chip" data-action="LOGIN_FAILED">Login Failed</button>
+          <button class="filter-chip" data-action="RESTORE">Restore</button>
+        </div>
+        <select class="form-select" style="width:auto;" id="entityFilterDesktop">
+          <option value="">All Entities</option><option value="Transaction">Transaction</option><option value="Budget">Budget</option><option value="Category">Category</option><option value="User">User</option><option value="RecurringTransaction">Recurring Transaction</option><option value="SystemSetting">System Setting</option>
+        </select>
+        <div class="input-icon-group" style="width:200px;"><i class="bi bi-calendar3"></i><input type="date" class="form-control" id="dateFilterDesktop"></div>
+      </div>
+
+      <!-- Filters (mobile) -->
+      <div class="chip-scroll mb-3 d-lg-none" data-chip-group id="actionFilterMobile">
+        <button class="filter-chip active" data-action="">All Actions</button>
+        <button class="filter-chip" data-action="CREATE">Create</button>
+        <button class="filter-chip" data-action="UPDATE">Update</button>
+        <button class="filter-chip" data-action="DELETE">Delete</button>
+        <button class="filter-chip" data-action="LOGIN">Login</button>
+        <button class="filter-chip" data-action="LOGOUT">Logout</button>
+        <button class="filter-chip" data-action="LOGIN_FAILED">Login Failed</button>
+        <button class="filter-chip" data-action="RESTORE">Restore</button>
+      </div>
+
+      <div class="surface-card">
+        <div class="table-responsive">
+          <table class="table table-modern mb-0">
+            <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Entity</th><th>IP Address</th><th></th></tr></thead>
+            <tbody id="auditTableBody"><tr><td colspan="6"><div class="section-loading" style="min-height:100px;"></div></td></tr></tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center p-3" style="border-top:1px solid var(--border-color);">
+          <span class="text-secondary" style="font-size:.8rem;" id="auditShowingLine">—</span>
+          <div class="d-flex gap-2">
+            <button class="icon-btn ripple-surface" id="auditPrevPage"><i class="bi bi-chevron-left"></i></button>
+            <button class="icon-btn ripple-surface" id="auditNextPage"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Mobile filter sheet -->
+<div class="modal sheet-mobile fade" id="filterSheet" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Filter Logs</h6>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <label class="form-label">Entity type</label>
+      <select class="form-select mb-3" id="entityFilterMobile">
+        <option value="">All Entities</option><option value="Transaction">Transaction</option><option value="Budget">Budget</option><option value="Category">Category</option><option value="User">User</option><option value="RecurringTransaction">Recurring Transaction</option><option value="SystemSetting">System Setting</option>
+      </select>
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control mb-4" id="dateFilterMobile">
+      <button class="btn btn-primary btn-lg w-100 ripple-surface" id="applyMobileFilters" data-bs-dismiss="modal">Apply Filters</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event detail modal -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:640px;">
+    <div class="modal-content p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-800 mb-0">Event Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div id="eventDetailBody"></div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/audit-log-data.js"></script>
+<script>
+  MET.guardAuth('admin');
+</script>
+</body>
+</html>

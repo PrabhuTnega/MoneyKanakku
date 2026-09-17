@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Profile — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span><span class="badge-count badge rounded-pill" style="background:var(--accent-coral);font-size:.65rem;">3</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+      <div class="topbar-title">Profile</div>
+      <a href="settings.html" class="icon-btn ripple-surface"><i class="bi bi-gear"></i></a>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Profile</h1>
+    </header>
+
+    <div class="container-app py-3 py-lg-4" style="max-width:840px;">
+
+      <div class="surface-card mb-4 text-center text-lg-start">
+        <div class="d-flex flex-column flex-lg-row align-items-center gap-4">
+          <div class="position-relative">
+            <div class="avatar avatar-lg" id="profileAvatar" style="background:var(--brand-100);">PS</div>
+            <!-- Edit-photo button — commented out for now: no storage backend (local
+            disk vs S3-compatible vs other) has been decided yet for profile photo
+            uploads, same reason as expense-form.html's receipt upload. This stays
+            UI-only until that's picked, so it isn't left clickable-but-dead.
+            <button class="icon-btn ripple-surface position-absolute" style="width:30px;height:30px;bottom:0;right:0;background:var(--brand-500);color:#fff;border-color:var(--brand-500);"><i class="bi bi-camera-fill" style="font-size:.8rem;"></i></button>
+            -->
+          </div>
+          <div class="flex-fill">
+            <h4 class="fw-800 mb-1" id="profileName">Priya Sharma</h4>
+            <p class="text-secondary mb-2" id="profileContact">priya@example.com</p>
+            <span class="badge-soft b-violet" id="profileMemberSince">—</span>
+          </div>
+          <a href="settings.html" class="btn btn-outline-soft ripple-surface"><i class="bi bi-pencil me-1"></i>Edit Profile</a>
+        </div>
+      </div>
+
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-violet"><i class="bi bi-receipt"></i></div><div class="stat-value" id="statTotalTxns">—</div><div class="stat-label">Total transactions</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-teal"><i class="bi bi-calendar-check"></i></div><div class="stat-value" id="statMonthsTracked">—</div><div class="stat-label">Months tracked</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-amber"><i class="bi bi-grid-3x3-gap-fill"></i></div><div class="stat-value" id="statCategoriesUsed">—</div><div class="stat-label">Categories used</div></div></div>
+        <div class="col"><div class="stat-tile"><div class="stat-icon chip-coral"><i class="bi bi-arrow-repeat"></i></div><div class="stat-value" id="statRecurringItems">—</div><div class="stat-label">Recurring items</div></div></div>
+      </div>
+
+      <div class="section-title-row"><h6>Account</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <a href="settings.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-violet"><i class="bi bi-person-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Personal Information</div><div class="txn-meta">Name, email, phone number</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <a href="change-password.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-blue"><i class="bi bi-shield-lock-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Security & Password</div><div class="txn-meta">Change password, login activity</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <a href="settings.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-teal"><i class="bi bi-currency-rupee"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Currency & Region</div><div class="txn-meta" id="profileCurrencyRegion">—</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+      </div>
+
+      <div class="section-title-row"><h6>Preferences</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <a href="settings.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-amber"><i class="bi bi-bell-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Notifications</div><div class="txn-meta">Budget alerts, reminders</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <a href="settings.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip" style="background:var(--surface-soft);color:var(--text-secondary);"><i class="bi bi-moon-stars-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Appearance</div><div class="txn-meta">Light, dark or system theme</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <a href="settings.html" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip chip-coral"><i class="bi bi-download"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Data Export & Backup</div><div class="txn-meta">CSV, Excel, PDF exports</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+      </div>
+
+      <div class="section-title-row"><h6>Support</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3">
+        <a href="#" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip" style="background:var(--surface-soft);color:var(--text-secondary);"><i class="bi bi-question-circle-fill"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Help Center</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+        <hr class="divider list-divider">
+        <a href="#" class="d-flex align-items-center txn-item text-decoration-none">
+          <div class="icon-chip" style="background:var(--surface-soft);color:var(--text-secondary);"><i class="bi bi-shield-check"></i></div>
+          <div class="txn-info"><div class="txn-title" style="color:var(--text-primary);">Privacy Policy</div></div>
+          <i class="bi bi-chevron-right text-muted-c"></i>
+        </a>
+      </div>
+
+      <button class="btn btn-danger-soft btn-lg w-100 ripple-surface mb-4" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
+        <i class="bi bi-box-arrow-right me-1"></i> Log Out
+      </button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap"><a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a></div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item active" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+</div>
+
+<div class="modal sheet-mobile fade" id="logoutModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-4 text-center">
+      <div class="sheet-handle d-lg-none"></div>
+      <div class="icon-chip-lg chip-coral mx-auto mb-3"><i class="bi bi-box-arrow-right"></i></div>
+      <h5 class="fw-800 mb-2">Log out of MoneyKanakku?</h5>
+      <p class="text-secondary mb-4" style="font-size:.86rem;">You'll need to sign in again to access your expenses.</p>
+      <div class="d-flex gap-3">
+        <button class="btn btn-outline-soft flex-fill ripple-surface" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger flex-fill ripple-surface" style="background:var(--accent-coral);border:0;" data-action="logout">Log Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/profile-data.js"></script>
+<script>
+  MET.guardAuth('protected').then(function(user){
+    if(!user) return;
+    $('#profileName').text(user.name);
+    $('#profileContact').text(user.email);
+    $('#profileMemberSince').text('Member since ' + new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }));
+    $('#profileCurrencyRegion').text(user.currency + ' • ' + user.timezone);
+    MET.loadProfileStats();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Create Account — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="auth-wrap">
+  <div class="row g-0 flex-grow-1">
+
+    <div class="col-12 col-lg-6 auth-visual d-none d-lg-flex flex-column justify-content-between p-5" style="position:relative;">
+      <div class="d-flex align-items-center gap-2" style="position:relative;z-index:1;">
+        <div class="splash-logo" style="width:44px;height:44px;border-radius:14px;font-size:1.3rem;"><i class="bi bi-currency-rupee"></i></div>
+        <span class="font-display fw-800 fs-5">MoneyKanakku</span>
+      </div>
+      <div style="position:relative;z-index:1;max-width:420px;">
+        <h2 class="font-display fw-800 text-white mb-3" style="font-size:2.1rem;">Join thousands mastering their money.</h2>
+        <p style="opacity:.85;">Create your free account and start tracking expenses, budgets and trends in under a minute.</p>
+        <ul class="list-unstyled mt-4 d-flex flex-column gap-3">
+          <li class="d-flex gap-2 align-items-center"><i class="bi bi-check-circle-fill"></i> Free forever, no card required</li>
+          <li class="d-flex gap-2 align-items-center"><i class="bi bi-check-circle-fill"></i> Bank-grade security</li>
+          <li class="d-flex gap-2 align-items-center"><i class="bi bi-check-circle-fill"></i> Works across mobile & web</li>
+        </ul>
+      </div>
+      <div style="position:relative;z-index:1;opacity:.8;font-size:.78rem;">© 2026 MoneyKanakku Inc. All rights reserved.</div>
+    </div>
+
+    <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center">
+      <div class="w-100 page-enter" style="max-width:420px; padding: calc(28px + var(--safe-top)) 26px 28px;">
+
+        <div class="d-flex d-lg-none align-items-center gap-2 mb-4">
+          <div class="icon-chip chip-violet"><i class="bi bi-currency-rupee"></i></div>
+          <span class="font-display fw-800 fs-5">MoneyKanakku</span>
+        </div>
+
+        <h2 class="font-display fw-800 mb-1">Create your account</h2>
+        <p class="text-secondary mb-4">Start your journey to smarter spending.</p>
+
+        <form id="registerForm" novalidate>
+          <div class="mb-3">
+            <label class="form-label">Full name</label>
+            <div class="input-icon-group">
+              <i class="bi bi-person"></i>
+              <input type="text" name="name" class="form-control" placeholder="Priya Sharma" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email address</label>
+            <div class="input-icon-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile number</label>
+            <div class="input-icon-group">
+              <i class="bi bi-phone"></i>
+              <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-icon-group position-relative">
+              <i class="bi bi-lock"></i>
+              <input type="password" id="regPw" name="password" class="form-control" style="padding-right:44px;" placeholder="Create a strong password" minlength="8" required>
+              <button type="button" class="btn p-0 position-absolute" style="right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);" data-toggle-password="regPw"><i class="bi bi-eye"></i></button>
+            </div>
+            <div class="d-flex gap-1 mt-2" id="pwStrengthBars">
+              <span class="flex-fill" style="height:4px;border-radius:99px;background:var(--border-color);"></span>
+              <span class="flex-fill" style="height:4px;border-radius:99px;background:var(--border-color);"></span>
+              <span class="flex-fill" style="height:4px;border-radius:99px;background:var(--border-color);"></span>
+              <span class="flex-fill" style="height:4px;border-radius:99px;background:var(--border-color);"></span>
+            </div>
+          </div>
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="terms" style="width:1.1em;height:1.1em;" required>
+            <label class="form-check-label text-secondary" style="font-size:.8rem;" for="terms">I agree to the <a href="#" style="color:var(--brand-500);">Terms of Service</a> & <a href="#" style="color:var(--brand-500);">Privacy Policy</a></label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface" id="registerBtn">Create Account</button>
+        </form>
+
+        <p class="text-center text-secondary mt-4 mb-0" style="font-size:.86rem;">
+          Already have an account? <a href="login.html" class="fw-700" style="color:var(--brand-500);">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script>
+  MET.guardAuth('public');
+
+  function passwordScore(pw){
+    let score = 0;
+    if(pw.length >= 8) score++;
+    if(/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+    if(/\d/.test(pw)) score++;
+    if(/[^A-Za-z0-9]/.test(pw)) score++;
+    return score;
+  }
+  $('#regPw').on('input', function(){
+    const score = passwordScore(this.value);
+    const colors = ['var(--border-color)', 'var(--accent-coral)', 'var(--accent-amber)', 'var(--accent-teal)', 'var(--accent-teal-dark)'];
+    $('#pwStrengthBars span').each(function(i){
+      $(this).css('background', i < score ? colors[score] : 'var(--border-color)');
+    });
+  });
+
+  $('#registerForm').on('submit', function(e){
+    e.preventDefault();
+    const $form = $(this);
+    if(!MET.validateForm($form)) return;
+
+    const $btn = $('#registerBtn');
+    MET.showButtonLoading($btn, 'Creating account…');
+    MET.api.post('/auth/register', {
+      name: $form.find('[name=name]').val().trim(),
+      email: $form.find('[name=email]').val().trim(),
+      phone: $form.find('[name=phone]').val().trim(),
+      password: $form.find('[name=password]').val()
+    }).then(function(){
+      MET.toastSuccess('Account created — welcome to MoneyKanakku!');
+      setTimeout(function(){ window.location.href = 'dashboard.html'; }, 500);
+    }, function(err){
+      MET.hideButtonLoading($btn);
+      if(err.fieldErrors){ MET.applyServerFieldErrors($form, err.fieldErrors); }
+      else { MET.showFormError($form, err.message); }
+      if(err.status !== 422) MET.toastError(err.message);
+    });
+  });
+</script>
+</body>
+</html>

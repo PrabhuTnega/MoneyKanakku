@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Add Transaction — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<header class="mobile-topbar d-lg-none">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('expenses.html')"><i class="bi bi-x-lg"></i></button>
+  <div class="topbar-title" id="formTitleMobile">Add Expense</div>
+  <span></span>
+</header>
+
+<div class="container-app d-none d-lg-flex align-items-center gap-3 py-4">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('expenses.html')"><i class="bi bi-x-lg"></i></button>
+  <h1 class="page-heading mb-0" id="formTitleDesktop">Add Expense</h1>
+</div>
+
+<main style="max-width:600px;margin:0 auto;" class="container-app pb-5 page-enter">
+
+  <form id="txnForm" novalidate>
+
+    <!-- Expense / Income toggle — decides everything below it -->
+    <div class="segmented mb-4" id="typeToggle">
+      <button type="button" class="active" data-type="expense"><i class="bi bi-arrow-down-circle-fill me-1"></i>Expense</button>
+      <button type="button" data-type="income"><i class="bi bi-arrow-up-circle-fill me-1"></i>Income</button>
+    </div>
+
+    <!-- Amount -->
+    <div class="surface-card text-center py-4 mb-4" id="amountCard" style="border:2px solid var(--accent-coral);">
+      <div class="text-secondary fw-600 mb-2" style="font-size:.8rem;" id="amountLabel">EXPENSE AMOUNT</div>
+      <div class="d-flex align-items-center justify-content-center gap-2">
+        <span class="font-display fw-700" id="currencySymbol" style="font-size:2rem;color:var(--accent-coral);">₹</span>
+        <input type="number" name="amount" class="amount-input" id="amountInput" placeholder="0" style="max-width:220px;color:var(--accent-coral);" min="0.01" step="0.01" required>
+      </div>
+      <div class="invalid-feedback text-center"></div>
+    </div>
+
+    <!-- Category picker — Expense set -->
+    <label class="form-label px-1">Category</label>
+    <div class="row row-cols-4 g-2 mb-1" id="expenseCategoryGrid"></div>
+    <div class="invalid-feedback mb-3" id="expenseCatError"></div>
+    <div class="empty-state py-4 mb-3 d-none" id="expenseCatEmpty">
+      <p class="text-secondary mb-2" style="font-size:.85rem;">You don't have any expense categories yet — create one first, then add your expense.</p>
+      <a href="category-form.html" class="btn btn-outline-soft btn-sm ripple-surface"><i class="bi bi-plus-lg me-1"></i>Add a category</a>
+    </div>
+
+    <!-- Category picker — Income set (hidden until Income is selected) -->
+    <div class="row row-cols-4 g-2 mb-1 d-none" id="incomeCategoryGrid"></div>
+    <div class="invalid-feedback mb-3 d-none" id="incomeCatError"></div>
+    <div class="empty-state py-4 mb-3 d-none" id="incomeCatEmpty">
+      <p class="text-secondary mb-2" style="font-size:.85rem;">You don't have any income categories yet — create one first, then add your income.</p>
+      <a href="category-form.html?type=income" class="btn btn-outline-soft btn-sm ripple-surface"><i class="bi bi-plus-lg me-1"></i>Add a category</a>
+    </div>
+
+    <div class="row g-3 mb-1">
+      <div class="col-12 col-md-6">
+        <label class="form-label">Date</label>
+        <div class="input-icon-group">
+          <i class="bi bi-calendar3"></i>
+          <input type="date" name="transactionDate" id="dateInput" class="form-control" required>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label" id="methodLabel">Payment method</label>
+        <div class="input-icon-group">
+          <i class="bi bi-wallet2"></i>
+          <select name="paymentMethod" id="methodSelect" class="form-select" style="padding-left:44px;">
+            <option value="UPI">UPI</option>
+            <option value="CARD">Credit / Debit Card</option>
+            <option value="CASH">Cash</option>
+            <option value="NETBANKING">Netbanking</option>
+            <option value="WALLET">Wallet</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3 mt-3">
+      <label class="form-label">Description <span class="text-muted-c fw-400">(optional)</span></label>
+      <textarea class="form-control" rows="3" id="descInput" placeholder="Add a note about this transaction..."></textarea>
+    </div>
+
+    <!-- Recurring toggle -->
+    <div class="surface-card mb-3" id="recurCard">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="icon-chip chip-violet"><i class="bi bi-arrow-repeat"></i></div>
+          <div>
+            <div class="fw-700" style="font-size:.88rem;">Mark as recurring</div>
+            <div class="text-secondary" style="font-size:.74rem;" id="recurHint">Auto-generate this expense monthly</div>
+          </div>
+        </div>
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" type="checkbox" id="recurToggle" style="cursor:pointer;">
+        </div>
+      </div>
+      <div id="recurOptions" class="d-none mt-3 pt-3" style="border-top:1px solid var(--border-color);">
+        <label class="form-label">Repeat frequency</label>
+        <select class="form-select" id="recurFrequency">
+          <option value="MONTHLY">Monthly</option>
+          <option value="WEEKLY">Weekly</option>
+          <option value="YEARLY">Yearly</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Receipt upload — commented out for now: no storage backend (local
+    disk vs S3-compatible vs other) has been decided yet for
+    TransactionAttachment, so this stays UI-only until that's picked.
+    Maybe we'll wire it up in future.
+    <label class="form-label px-1" id="receiptLabel">Attach receipt <span class="text-muted-c fw-400">(optional)</span></label>
+    <div class="d-flex align-items-center justify-content-center border rounded-xl mb-4 ripple-surface" style="height:100px;border-style:dashed !important;border-color:var(--border-color) !important;cursor:pointer;">
+      <div class="text-center text-secondary">
+        <i class="bi bi-cloud-arrow-up fs-4 d-block mb-1"></i>
+        <span style="font-size:.8rem;" id="receiptHint">Tap to upload photo</span>
+      </div>
+    </div>
+    -->
+
+    <button type="submit" class="btn btn-lg w-100 ripple-surface mb-2" id="saveBtn" style="background:var(--accent-coral);border:0;color:#fff;">Save Expense</button>
+    <button type="button" class="btn btn-outline-soft btn-lg w-100 ripple-surface" onclick="MET.goBack('expenses.html')">Cancel</button>
+  </form>
+</main>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script src="assets/js/expense-form-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>

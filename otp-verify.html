@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Verify OTP — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="mobile-topbar d-lg-none">
+  <button class="icon-btn ripple-surface" onclick="MET.goBack('login.html')"><i class="bi bi-arrow-left"></i></button>
+  <div class="topbar-title">Verification</div>
+</div>
+
+<div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
+  <div class="w-100 page-enter text-center" style="max-width:420px; padding: 10px 26px 28px;">
+
+    <div class="icon-chip-lg chip-teal mb-4 mx-auto"><i class="bi bi-shield-check"></i></div>
+    <h2 class="font-display fw-800 mb-1">Verify your identity</h2>
+    <p class="text-secondary mb-4">Enter the 6-digit code sent to <strong class="text-body" id="maskedEmail">your email</strong></p>
+    <div id="devOtpHint" class="form-error-banner d-none" style="background:rgba(14,207,174,.1);color:var(--accent-teal-dark);border-color:rgba(14,207,174,.25);"></div>
+
+    <form id="otpForm" novalidate>
+      <div class="d-flex justify-content-center gap-2 mb-1">
+        <input class="otp-input" maxlength="1" inputmode="numeric" autofocus>
+        <input class="otp-input" maxlength="1" inputmode="numeric">
+        <input class="otp-input" maxlength="1" inputmode="numeric">
+        <input class="otp-input" maxlength="1" inputmode="numeric">
+        <input class="otp-input" maxlength="1" inputmode="numeric">
+        <input class="otp-input" maxlength="1" inputmode="numeric">
+      </div>
+      <div class="invalid-feedback text-center mb-3" id="otpError"></div>
+      <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface mb-3" id="otpBtn">Verify Code</button>
+      <p class="text-secondary mb-0" style="font-size:.86rem;">
+        Didn't get the code? <a href="#" class="fw-700" id="resendLink" style="color:var(--brand-500);">Resend in <span id="otpTimer">30s</span></a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/validate.js"></script>
+<script>
+  MET.guardAuth('public');
+
+  const qs = new URLSearchParams(window.location.search);
+  const email = qs.get('email') || '';
+  const purpose = qs.get('mode') === 'verify' ? 'EMAIL_VERIFICATION' : 'PASSWORD_RESET';
+
+  function maskEmail(addr){
+    const [user, domain] = addr.split('@');
+    if(!domain) return addr;
+    const visible = user.slice(0, 1);
+    return visible + '•'.repeat(Math.max(user.length - 1, 3)) + '@' + domain;
+  }
+  if(email) $('#maskedEmail').text(maskEmail(email));
+  if(qs.get('devOtp')){
+    $('#devOtpHint').removeClass('d-none').html('<i class="bi bi-info-circle-fill"></i><span>No email provider is wired up yet — your dev code is <strong>' + qs.get('devOtp') + '</strong></span>');
+  }
+
+  function otpCode(){
+    return $('.otp-input').toArray().map(function(el){ return el.value || ''; }).join('');
+  }
+  function showOtpError(message){
+    $('.otp-input').addClass('is-invalid field-shake');
+    setTimeout(function(){ $('.otp-input').removeClass('field-shake'); }, 400);
+    $('#otpError').text(message).addClass('d-block');
+  }
+  function clearOtpError(){
+    $('.otp-input').removeClass('is-invalid');
+    $('#otpError').removeClass('d-block').text('');
+  }
+  $(document).on('input', '.otp-input', clearOtpError);
+
+  let t = 30;
+  const timerEl = document.getElementById('otpTimer');
+  let iv = setInterval(tick, 1000);
+  function tick(){
+    t--; timerEl.textContent = t + 's';
+    if(t <= 0){
+      clearInterval(iv);
+      $('#resendLink').html('Resend code').attr('href', '#');
+    }
+  }
+  $('#resendLink').on('click', function(e){
+    e.preventDefault();
+    if(t > 0) return;
+    MET.api.post('/auth/resend-otp', { email: email, purpose: purpose }).then(function(resp){
+      MET.toastSuccess('A new code has been sent.');
+      if(resp.devOtp) $('#devOtpHint').removeClass('d-none').html('<i class="bi bi-info-circle-fill"></i><span>Your new dev code is <strong>' + resp.devOtp + '</strong></span>');
+      t = 30;
+      $('#resendLink').html('Resend in <span id="otpTimer">30s</span>');
+      iv = setInterval(tick, 1000);
+    }, function(err){ MET.toastError(err.message); });
+  });
+
+  $('#otpForm').on('submit', function(e){
+    e.preventDefault();
+    clearOtpError();
+    const code = otpCode();
+    if(code.length !== 6){ showOtpError('Enter all 6 digits.'); return; }
+
+    const $btn = $('#otpBtn');
+    MET.showButtonLoading($btn, 'Verifying…');
+    MET.api.post('/auth/verify-otp', { email: email, purpose: purpose, code: code }).then(function(resp){
+      MET.toastSuccess('Code verified.');
+      setTimeout(function(){
+        if(resp.purpose === 'EMAIL_VERIFICATION'){ window.location.href = 'dashboard.html'; }
+        else { window.location.href = 'reset-password.html?ticket=' + encodeURIComponent(resp.resetTicket); }
+      }, 400);
+    }, function(err){
+      MET.hideButtonLoading($btn);
+      showOtpError(err.message);
+    });
+  });
+</script>
+</body>
+</html>

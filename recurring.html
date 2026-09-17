@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Recurring Expenses — MoneyKanakku</title>
+<meta name="theme-color" content="#6c5ce7">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body class="tap-highlight-none bg-app">
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark"><i class="bi bi-currency-rupee"></i></div>
+      <div class="brand-text">MoneyKanakku<small>Every Rupee. Accounted For.</small></div>
+      <button class="sidebar-collapse-btn ripple-surface" data-sidebar-toggle title="Collapse sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
+    <nav class="side-nav">
+      <div class="side-section-title">Main</div>
+      <a href="dashboard.html" class="side-link" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i><span class="nav-label">Dashboard</span></a>
+      <a href="expenses.html" class="side-link" data-nav-page="expenses.html"><i class="bi bi-receipt"></i><span class="nav-label">Transactions</span></a>
+      <a href="categories.html" class="side-link" data-nav-page="categories.html"><i class="bi bi-grid-3x3-gap-fill"></i><span class="nav-label">Categories</span></a>
+      <a href="budget.html" class="side-link" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i><span class="nav-label">Budget</span></a>
+      <a href="recurring.html" class="side-link" data-nav-page="recurring.html"><i class="bi bi-arrow-repeat"></i><span class="nav-label">Recurring</span></a>
+      <a href="reports.html" class="side-link" data-nav-page="reports.html"><i class="bi bi-bar-chart-line-fill"></i><span class="nav-label">Reports</span></a>
+      <div class="side-section-title">Account</div>
+      <a href="notifications.html" class="side-link" data-nav-page="notifications.html"><i class="bi bi-bell-fill"></i><span class="nav-label">Notifications</span><span class="badge-count badge rounded-pill" style="background:var(--accent-coral);font-size:.65rem;">3</span></a>
+      <a href="profile.html" class="side-link" data-nav-page="profile.html"><i class="bi bi-person-fill"></i><span class="nav-label">Profile</span></a>
+      <a href="settings.html" class="side-link" data-nav-page="settings.html"><i class="bi bi-gear-fill"></i><span class="nav-label">Settings</span></a>
+    </nav>
+    <a href="profile.html" class="sidebar-user text-decoration-none">
+      <div class="avatar avatar-md" style="background:var(--brand-100);">PS</div>
+      <div class="u-info" style="min-width:0;">
+        <div class="fw-700 text-truncate" style="font-size:.85rem;color:var(--text-primary);">Priya Sharma</div>
+        <div class="text-secondary text-truncate" style="font-size:.72rem;">priya@example.com</div>
+      </div>
+    </a>
+  </aside>
+
+  <main class="app-main">
+
+    <header class="mobile-topbar d-lg-none">
+      <button class="icon-btn ripple-surface" onclick="MET.goBack('dashboard.html')"><i class="bi bi-arrow-left"></i></button>
+      <div class="topbar-title">Recurring</div>
+      <a href="recurring-form.html" class="icon-btn ripple-surface"><i class="bi bi-plus-lg"></i></a>
+    </header>
+
+    <header class="desktop-topbar">
+      <h1 class="page-heading">Recurring Expenses</h1>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <a href="recurring-form.html" class="btn btn-primary ripple-surface"><i class="bi bi-plus-lg me-1"></i>New Recurring</a>
+      </div>
+    </header>
+
+    <div class="container-app py-3 py-lg-4">
+
+      <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col"><div class="stat-tile">
+          <div class="stat-icon chip-violet"><i class="bi bi-arrow-repeat"></i></div>
+          <div class="stat-value" id="statActiveCount">—</div><div class="stat-label">Active recurring</div>
+        </div></div>
+        <div class="col"><div class="stat-tile">
+          <div class="stat-icon chip-teal"><i class="bi bi-arrow-up-circle-fill"></i></div>
+          <div class="stat-value" style="color:var(--income-color);" id="statMonthlyIncome">—</div><div class="stat-label">Monthly income</div>
+        </div></div>
+        <div class="col"><div class="stat-tile">
+          <div class="stat-icon chip-coral"><i class="bi bi-arrow-down-circle-fill"></i></div>
+          <div class="stat-value" style="color:var(--expense-color);" id="statMonthlyOutgo">—</div><div class="stat-label">Monthly outgo</div>
+        </div></div>
+        <div class="col"><div class="stat-tile">
+          <div class="stat-icon chip-amber"><i class="bi bi-calendar-event"></i></div>
+          <div class="stat-value" id="statNextDue">—</div><div class="stat-label" id="statNextDueLabel">Next due</div>
+        </div></div>
+      </div>
+
+      <!-- Type filter: All / Income / Expense -->
+      <div class="segmented mb-4" style="max-width:340px;" id="recurTypeFilter">
+        <button class="active" data-type="all">All</button>
+        <button data-type="income"><i class="bi bi-arrow-up-circle-fill me-1" style="color:var(--income-color);"></i>Income</button>
+        <button data-type="expense"><i class="bi bi-arrow-down-circle-fill me-1" style="color:var(--accent-coral);"></i>Expense</button>
+      </div>
+
+      <div class="section-title-row"><h6>Upcoming</h6></div>
+      <div class="surface-card mb-4 p-2 p-lg-3" id="upcomingList"><div class="section-loading" style="min-height:100px;"></div></div>
+
+      <div class="section-title-row"><h6>All recurring items</h6></div>
+      <div class="surface-card p-2 p-lg-3" id="allRecurringList"><div class="section-loading" style="min-height:100px;"></div></div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="bn-item" data-nav-page="dashboard.html"><i class="bi bi-grid-1x2-fill"></i>Home</a>
+    <a href="expenses.html" class="bn-item" data-nav-page="expenses.html"><i class="bi bi-receipt"></i>Transactions</a>
+    <div class="bn-fab-wrap"><a href="expense-form.html" class="bn-fab ripple-surface"><i class="bi bi-plus-lg"></i></a></div>
+    <a href="budget.html" class="bn-item" data-nav-page="budget.html"><i class="bi bi-pie-chart-fill"></i>Budget</a>
+    <a href="profile.html" class="bn-item" data-nav-page="profile.html"><i class="bi bi-person-fill"></i>Profile</a>
+  </nav>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/jquery/jquery.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/recurring-data.js"></script>
+<script>
+  MET.guardAuth('protected');
+</script>
+</body>
+</html>
