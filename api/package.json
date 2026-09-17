@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/api/src/server.js",
-    "build": "tsc && xcopy /E /I /Y ..\\db dist\\db",
+    "build": "tsc && node scripts/copy-prisma.mjs", 
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
